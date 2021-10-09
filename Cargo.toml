@@ -11,6 +11,7 @@ license = "MIT"
 serde = { version = "1.0", features = ["derive"] }
 url = { version = "2.x", features = ["serde"] }
 chrono = { version = "0.4", features = ["serde"] }
+cvss = { version = "1.x", features = ["serde"] }
 
 [dev-dependencies]
 serde_json = "1.0"

@@ -39,7 +39,7 @@ use url::Url;
 pub struct Csaf {
     pub document: Document,
     pub product_tree: Option<ProductTree>,
-    pub vulnerabilities: Option<Vulnerabilities>,
+    pub vulnerabilities: Option<Vec<Vulnerability>>,
 }
 
 // https://github.com/oasis-tcs/csaf/blob/master/csaf_2.0/prose/csaf-v2-editor-draft.md#321-document-property
@@ -212,11 +212,209 @@ pub enum RelationshipCategory {
     OptionalComponentOf,
 }
 
+type ProductGroupsT = Vec<ProductGroupIdT>;
 type ProductGroupIdT = String;
 type ProductIdT = String;
 
+// https://github.com/oasis-tcs/csaf/blob/master/csaf_2.0/prose/csaf-v2-editor-draft.md#323-vulnerabilities-property
 #[derive(Serialize, Deserialize, Debug)]
-pub struct Vulnerabilities {}
+pub struct Vulnerability {
+    acknowledgments: Option<AcknowledgmentsT>,
+    // Todo: Constraint/validation
+    cve: Option<String>,
+    cwe: Option<Cwe>,
+    discovery_date: Option<DateTime<Utc>>,
+    id: Option<VulnerabilityId>,
+    involvements: Option<Vec<Involvement>>,
+    notes: Option<NotesT>,
+    product_status: Option<ProductStatus>,
+    references: Option<ReferencesT>,
+    release_date: Option<DateTime<Utc>>,
+    remediations: Option<Vec<Remediation>>,
+    scores: Option<Vec<Score>>,
+    threats: Option<Vec<Threat>>,
+    title: Option<String>,
+}
+
+// https://github.com/oasis-tcs/csaf/blob/master/csaf_2.0/prose/csaf-v2-editor-draft.md#311-acknowledgments-type
+type AcknowledgmentsT = Vec<Acknowledgment>;
+
+// TODO: with at least 1 and at most 4 properties
+#[derive(Serialize, Deserialize, Debug)]
+pub struct Acknowledgment {
+    names: Option<Vec<String>>,
+    organization: Option<String>,
+    summary: Option<String>,
+    urls: Option<Vec<Url>>,
+}
+
+// https://github.com/oasis-tcs/csaf/blob/master/csaf_2.0/prose/csaf-v2-editor-draft.md#315-notes-type
+type NotesT = Vec<Note>;
+
+#[derive(Serialize, Deserialize, Debug)]
+pub struct Note {
+    category: NoteCategory,
+    text: String,
+    audience: Option<String>,
+    title: Option<String>,
+}
+
+#[derive(Serialize, Deserialize, Debug)]
+#[serde(rename_all = "snake_case")]
+pub enum NoteCategory {
+    Description,
+    Details,
+    Faq,
+    General,
+    LegalDisclaimer,
+    Other,
+    Summary,
+}
+
+// https://github.com/oasis-tcs/csaf/blob/master/csaf_2.0/prose/csaf-v2-editor-draft.md#3110-references-type
+type ReferencesT = Vec<Reference>;
+
+#[derive(Serialize, Deserialize, Debug)]
+pub struct Reference {
+    url: Url,
+    summary: String,
+    category: Option<ReferenceCategory>,
+}
+
+#[derive(Serialize, Deserialize, Debug)]
+#[serde(rename_all = "snake_case")]
+pub enum ReferenceCategory {
+    External,
+    #[serde(rename = "self")]
+    RefSelf,
+}
+
+#[derive(Serialize, Deserialize, Debug)]
+pub struct Cwe {
+    id: String,
+    name: String,
+}
+
+// https://github.com/oasis-tcs/csaf/blob/master/csaf_2.0/prose/csaf-v2-editor-draft.md#3235-vulnerabilities-property---id
+#[derive(Serialize, Deserialize, Debug)]
+pub struct VulnerabilityId {
+    system_name: String,
+    text: String,
+}
+
+#[derive(Serialize, Deserialize, Debug)]
+pub struct Involvement {
+    party: InvolvementParty,
+    status: InvolvementStatus,
+    date: Option<DateTime<Utc>>,
+    summary: Option<String>,
+}
+
+#[derive(Serialize, Deserialize, Debug)]
+#[serde(rename_all = "lowercase")]
+pub enum InvolvementParty {
+    Coordinator,
+    Discoverer,
+    Other,
+    User,
+    Vendor,
+}
+
+#[derive(Serialize, Deserialize, Debug)]
+#[serde(rename_all = "snake_case")]
+pub enum InvolvementStatus {
+    Completed,
+    ContactAttempted,
+    Disputed,
+    InProgress,
+    NotContacted,
+    Open,
+}
+
+type ProductsT = Vec<ProductIdT>;
+
+// https://github.com/oasis-tcs/csaf/blob/master/csaf_2.0/prose/csaf-v2-editor-draft.md#3238-vulnerabilities-property---product-status
+#[derive(Serialize, Deserialize, Debug)]
+pub struct ProductStatus {
+    first_affected: Option<ProductsT>,
+    first_fixed: Option<ProductsT>,
+    fixed: Option<ProductsT>,
+    known_affected: Option<ProductsT>,
+    known_not_affected: Option<ProductsT>,
+    last_affected: Option<ProductsT>,
+    recommended: Option<ProductsT>,
+    under_investigation: Option<ProductsT>,
+}
+
+// https://github.com/oasis-tcs/csaf/blob/master/csaf_2.0/prose/csaf-v2-editor-draft.md#32311-vulnerabilities-property---remediations
+#[derive(Serialize, Deserialize, Debug)]
+pub struct Remediation {
+    category: RemediationCategory,
+    details: String,
+    date: Option<DateTime<Utc>>,
+    entitlements: Option<Vec<String>>,
+    group_ids: Option<ProductGroupsT>,
+    product_ids: Option<ProductsT>,
+    restart_required: Option<RestartRequired>,
+    url: Url,
+}
+
+#[derive(Serialize, Deserialize, Debug)]
+#[serde(rename_all = "snake_case")]
+pub enum RemediationCategory {
+    Mitigation,
+    NoFixPlanned,
+    NoneAvailable,
+    VendorFix,
+    Workaround,
+}
+
+#[derive(Serialize, Deserialize, Debug)]
+pub struct RestartRequired {
+    category: RestartCategory,
+    details: Option<String>,
+}
+
+#[derive(Serialize, Deserialize, Debug)]
+#[serde(rename_all = "snake_case")]
+pub enum RestartCategory {
+    Connected,
+    Dependencies,
+    Machine,
+    None,
+    Parent,
+    Service,
+    System,
+    VulnerableComponent,
+    Zone,
+}
+
+// https://github.com/oasis-tcs/csaf/blob/master/csaf_2.0/prose/csaf-v2-editor-draft.md#32312-vulnerabilities-property---scores
+#[derive(Serialize, Deserialize, Debug)]
+pub struct Score {
+    products: ProductsT,
+    // TODO: Should have at least one of:
+    cvss_v2: Option<String>,
+    cvss_v3: Option<cvss::v3::Base>,
+}
+
+// https://github.com/oasis-tcs/csaf/blob/master/csaf_2.0/prose/csaf-v2-editor-draft.md#32313-vulnerabilities-property---threats
+#[derive(Serialize, Deserialize, Debug)]
+pub struct Threat {
+    category: ThreatCategory,
+    details: String,
+    date: Option<DateTime<Utc>>,
+    group_ids: Option<ProductGroupsT>,
+    product_ids: Option<ProductsT>,
+}
+
+#[derive(Serialize, Deserialize, Debug)]
+#[serde(rename_all = "snake_case")]
+pub enum ThreatCategory {
+    ExploitStatus,
+    Impact,
+    TargetSet,
+}
 
 #[cfg(test)]
 mod tests {
