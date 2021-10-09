@@ -34,6 +34,7 @@ use url::Url;
 
 // > Both values `Example Company Security Advisory` and `Example Company security_advisory` in `/document/category` use the profile "Generic CSAF". This is important to prepare forward compatibility as later versions of CSAF might add new profiles. Therefore, the values which can be used for the profile "Generic CSAF" might change.
 
+// https://github.com/oasis-tcs/csaf/blob/master/csaf_2.0/prose/csaf-v2-editor-draft.md#32-properties
 #[derive(Serialize, Deserialize, Debug)]
 pub struct Csaf {
     pub document: Document,
@@ -41,6 +42,7 @@ pub struct Csaf {
     pub vulnerabilities: Option<Vulnerabilities>,
 }
 
+// https://github.com/oasis-tcs/csaf/blob/master/csaf_2.0/prose/csaf-v2-editor-draft.md#321-document-property
 #[derive(Serialize, Deserialize, Debug)]
 pub struct Document {
     pub category: String,
@@ -122,8 +124,97 @@ pub enum Status {
     Interim,
 }
 
+// https://github.com/oasis-tcs/csaf/blob/master/csaf_2.0/prose/csaf-v2-editor-draft.md#322-product-tree-property
 #[derive(Serialize, Deserialize, Debug)]
-pub struct ProductTree {}
+pub struct ProductTree {
+    branches: Option<BranchesT>,
+    full_product_names: Option<Vec<FullProductName>>,
+    product_groups: Option<Vec<ProductGroup>>,
+    relationships: Option<Vec<Relationship>>,
+}
+
+type BranchesT = Vec<Branch>;
+
+#[derive(Serialize, Deserialize, Debug)]
+pub struct Branch {
+    name: String,
+    category: BranchCategory,
+    // TODO - Must have only one of product or branches
+    product: Option<FullProductName>,
+    branches: BranchesT,
+}
+
+#[derive(Serialize, Deserialize, Debug)]
+#[serde(rename_all = "snake_case")]
+pub enum BranchCategory {
+    Architecture,
+    HostName,
+    Language,
+    Legacy,
+    PatchLevel,
+    ProductFamily,
+    ProductName,
+    ProductVersion,
+    ServicePack,
+    Specification,
+    Vendor,
+}
+
+// https://github.com/oasis-tcs/csaf/blob/master/csaf_2.0/prose/csaf-v2-editor-draft.md#313-full-product-name-type
+#[derive(Serialize, Deserialize, Debug)]
+pub struct FullProductName {
+    name: String,
+    product_id: ProductIdT,
+    product_identification_helper: Option<ProductIdentificationHelper>,
+}
+
+// https://github.com/oasis-tcs/csaf/blob/master/csaf_2.0/prose/csaf-v2-editor-draft.md#3133-full-product-name-type---product-identification-helper
+#[derive(Serialize, Deserialize, Debug)]
+pub struct ProductIdentificationHelper {
+    cpe: Option<String>, // TODO: Integrate actual CPE aware data type
+    hashes: Option<Vec<HashCollection>>,
+}
+
+#[derive(Serialize, Deserialize, Debug)]
+pub struct HashCollection {
+    file_hashes: Vec<HashValue>,
+    file_name: String,
+}
+
+#[derive(Serialize, Deserialize, Debug)]
+pub struct HashValue {
+    algorithm: String,
+    value: String,
+}
+
+#[derive(Serialize, Deserialize, Debug)]
+pub struct ProductGroup {
+    group_id: ProductGroupIdT,
+    product_ids: Vec<ProductIdT>,
+    summary: Option<String>,
+}
+
+#[derive(Serialize, Deserialize, Debug)]
+pub struct Relationship {
+    category: RelationshipCategory,
+    full_product_name: FullProductName,
+    product_reference: ProductIdT,
+    relates_to_product_reference: ProductIdT,
+}
+
+#[derive(Serialize, Deserialize, Debug)]
+#[serde(rename_all = "snake_case")]
+pub enum RelationshipCategory {
+    DefaultComponentOf,
+    ExternalComponentOf,
+    InstalledOn,
+    InstalledWith,
+    OptionalComponentOf,
+}
+
+type ProductGroupIdT = String;
+type ProductIdT = String;
+
 #[derive(Serialize, Deserialize, Debug)]
 pub struct Vulnerabilities {}
 
