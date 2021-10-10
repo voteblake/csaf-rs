@@ -2,7 +2,7 @@ use chrono::{DateTime, Utc};
 use serde::{Deserialize, Serialize};
 use url::Url;
 
-use crate::definitions::VersionT;
+use crate::definitions::{AcknowledgmentsT, LangT, NotesT, ReferencesT, VersionT};
 
 /// [Document level meta-data](https://github.com/oasis-tcs/csaf/blob/master/csaf_2.0/prose/csaf-v2-editor-draft.md#321-document-property)
 #[derive(Serialize, Deserialize, Debug)]
@@ -12,6 +12,13 @@ pub struct Document {
     pub title: String,
     pub tracking: Tracking,
     pub csaf_version: CsafVersion,
+    pub acknowledgments: Option<AcknowledgmentsT>,
+    pub aggregate_severity: Option<AggregateSeverity>,
+    pub distribution: Option<Distribution>,
+    pub lang: Option<LangT>,
+    pub notes: Option<NotesT>,
+    pub references: Option<ReferencesT>,
+    pub source_lang: Option<LangT>,
 }
 
 #[derive(Serialize, Deserialize, Debug)]
@@ -83,4 +90,34 @@ pub enum Status {
     Draft,
     Final,
     Interim,
+}
+
+/// [Aggregate severity](https://github.com/oasis-tcs/csaf/blob/master/csaf_2.0/prose/csaf-v2-editor-draft.md#3212-document-property---aggregate-severity)
+#[derive(Serialize, Deserialize, Debug)]
+pub struct AggregateSeverity {
+    text: String,
+    namespace: Option<Url>,
+}
+
+/// [Distribution](https://github.com/oasis-tcs/csaf/blob/master/csaf_2.0/prose/csaf-v2-editor-draft.md#3215-document-property---distribution)
+#[derive(Serialize, Deserialize, Debug)]
+pub struct Distribution {
+    // TODO: enforce 'with at least 1 of the 2 properties'
+    text: Option<String>,
+    tlp: Option<Tlp>,
+}
+
+/// [TLP](https://github.com/oasis-tcs/csaf/blob/master/csaf_2.0/prose/csaf-v2-editor-draft.md#32152-document-property---distribution---tlp)
+#[derive(Serialize, Deserialize, Debug)]
+pub struct Tlp {
+    label: TlpLabel,
+    url: Option<Url>,
+}
+
+#[derive(Serialize, Deserialize, Debug)]
+pub enum TlpLabel {
+    AMBER,
+    GREEN,
+    RED,
+    WHITE,
 }
