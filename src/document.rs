@@ -95,23 +95,23 @@ pub enum Status {
 /// [Aggregate severity](https://github.com/oasis-tcs/csaf/blob/master/csaf_2.0/prose/csaf-v2-editor-draft.md#3212-document-property---aggregate-severity)
 #[derive(Serialize, Deserialize, Debug)]
 pub struct AggregateSeverity {
-    text: String,
-    namespace: Option<Url>,
+    pub text: String,
+    pub namespace: Option<Url>,
 }
 
 /// [Distribution](https://github.com/oasis-tcs/csaf/blob/master/csaf_2.0/prose/csaf-v2-editor-draft.md#3215-document-property---distribution)
 #[derive(Serialize, Deserialize, Debug)]
 pub struct Distribution {
     // TODO: enforce 'with at least 1 of the 2 properties'
-    text: Option<String>,
-    tlp: Option<Tlp>,
+    pub text: Option<String>,
+    pub tlp: Option<Tlp>,
 }
 
 /// [TLP](https://github.com/oasis-tcs/csaf/blob/master/csaf_2.0/prose/csaf-v2-editor-draft.md#32152-document-property---distribution---tlp)
 #[derive(Serialize, Deserialize, Debug)]
 pub struct Tlp {
-    label: TlpLabel,
-    url: Option<Url>,
+    pub label: TlpLabel,
+    pub url: Option<Url>,
 }
 
 #[derive(Serialize, Deserialize, Debug)]

@@ -7,10 +7,10 @@ pub(crate) type AcknowledgmentsT = Vec<Acknowledgment>;
 // TODO: with at least 1 and at most 4 properties
 #[derive(Serialize, Deserialize, Debug)]
 pub struct Acknowledgment {
-    names: Option<Vec<String>>,
-    organization: Option<String>,
-    summary: Option<String>,
-    urls: Option<Vec<Url>>,
+    pub names: Option<Vec<String>>,
+    pub organization: Option<String>,
+    pub summary: Option<String>,
+    pub urls: Option<Vec<Url>>,
 }
 
 // https://github.com/oasis-tcs/csaf/blob/master/csaf_2.0/prose/csaf-v2-editor-draft.md#312-branches-type
@@ -18,11 +18,11 @@ pub(crate) type BranchesT = Vec<Branch>;
 
 #[derive(Serialize, Deserialize, Debug)]
 pub struct Branch {
-    name: String,
-    category: BranchCategory,
+    pub name: String,
+    pub category: BranchCategory,
     // TODO - Must have only one of product or branches
-    product: Option<FullProductName>,
-    branches: BranchesT,
+    pub product: Option<FullProductName>,
+    pub branches: BranchesT,
 }
 
 #[derive(Serialize, Deserialize, Debug)]
@@ -44,33 +44,33 @@ pub enum BranchCategory {
 // https://github.com/oasis-tcs/csaf/blob/master/csaf_2.0/prose/csaf-v2-editor-draft.md#313-full-product-name-type
 #[derive(Serialize, Deserialize, Debug)]
 pub struct FullProductName {
-    name: String,
-    product_id: ProductIdT,
-    product_identification_helper: Option<ProductIdentificationHelper>,
+    pub name: String,
+    pub product_id: ProductIdT,
+    pub product_identification_helper: Option<ProductIdentificationHelper>,
 }
 
 // https://github.com/oasis-tcs/csaf/blob/master/csaf_2.0/prose/csaf-v2-editor-draft.md#3133-full-product-name-type---product-identification-helper
 #[derive(Serialize, Deserialize, Debug)]
 pub struct ProductIdentificationHelper {
-    cpe: Option<String>, // TODO: Integrate actual CPE aware data type
-    hashes: Option<Vec<HashCollection>>,
-    purl: Option<String>, // TODO: Validation https://github.com/oasis-tcs/csaf/blob/master/csaf_2.0/prose/csaf-v2-editor-draft.md#31333-full-product-name-type---product-identification-helper---purl
-    sbom_urls: Option<Vec<Url>>,
-    serial_numbers: Option<Vec<String>>,
-    skus: Option<Vec<String>>,
-    x_generic_uris: Option<Vec<Url>>,
+    pub cpe: Option<String>, // TODO: Integrate actual CPE aware data type
+    pub hashes: Option<Vec<HashCollection>>,
+    pub purl: Option<String>, // TODO: Validation https://github.com/oasis-tcs/csaf/blob/master/csaf_2.0/prose/csaf-v2-editor-draft.md#31333-full-product-name-type---product-identification-helper---purl
+    pub sbom_urls: Option<Vec<Url>>,
+    pub serial_numbers: Option<Vec<String>>,
+    pub skus: Option<Vec<String>>,
+    pub x_generic_uris: Option<Vec<Url>>,
 }
 
 #[derive(Serialize, Deserialize, Debug)]
 pub struct HashCollection {
-    file_hashes: Vec<HashValue>,
-    file_name: String,
+    pub file_hashes: Vec<HashValue>,
+    pub file_name: String,
 }
 
 #[derive(Serialize, Deserialize, Debug)]
 pub struct HashValue {
-    algorithm: String,
-    value: String,
+    pub algorithm: String,
+    pub value: String,
 }
 
 // https://github.com/oasis-tcs/csaf/blob/master/csaf_2.0/prose/csaf-v2-editor-draft.md#314-language-type
@@ -81,10 +81,10 @@ pub(crate) type NotesT = Vec<Note>;
 
 #[derive(Serialize, Deserialize, Debug)]
 pub struct Note {
-    category: NoteCategory,
-    text: String,
-    audience: Option<String>,
-    title: Option<String>,
+    pub category: NoteCategory,
+    pub text: String,
+    pub audience: Option<String>,
+    pub title: Option<String>,
 }
 
 #[derive(Serialize, Deserialize, Debug)]
@@ -116,9 +116,9 @@ pub(crate) type ReferencesT = Vec<Reference>;
 
 #[derive(Serialize, Deserialize, Debug)]
 pub struct Reference {
-    url: Url,
-    summary: String,
-    category: Option<ReferenceCategory>,
+    pub url: Url,
+    pub summary: String,
+    pub category: Option<ReferenceCategory>,
 }
 
 #[derive(Serialize, Deserialize, Debug)]

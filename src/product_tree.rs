@@ -5,25 +5,25 @@ use crate::definitions::{BranchesT, FullProductName, ProductGroupIdT, ProductIdT
 // https://github.com/oasis-tcs/csaf/blob/master/csaf_2.0/prose/csaf-v2-editor-draft.md#322-product-tree-property
 #[derive(Serialize, Deserialize, Debug)]
 pub struct ProductTree {
-    branches: Option<BranchesT>,
-    full_product_names: Option<Vec<FullProductName>>,
-    product_groups: Option<Vec<ProductGroup>>,
-    relationships: Option<Vec<Relationship>>,
+    pub branches: Option<BranchesT>,
+    pub full_product_names: Option<Vec<FullProductName>>,
+    pub product_groups: Option<Vec<ProductGroup>>,
+    pub relationships: Option<Vec<Relationship>>,
 }
 
 #[derive(Serialize, Deserialize, Debug)]
 pub struct ProductGroup {
-    group_id: ProductGroupIdT,
-    product_ids: Vec<ProductIdT>,
-    summary: Option<String>,
+    pub group_id: ProductGroupIdT,
+    pub product_ids: Vec<ProductIdT>,
+    pub summary: Option<String>,
 }
 
 #[derive(Serialize, Deserialize, Debug)]
 pub struct Relationship {
-    category: RelationshipCategory,
-    full_product_name: FullProductName,
-    product_reference: ProductIdT,
-    relates_to_product_reference: ProductIdT,
+    pub category: RelationshipCategory,
+    pub full_product_name: FullProductName,
+    pub product_reference: ProductIdT,
+    pub relates_to_product_reference: ProductIdT,
 }
 
 #[derive(Serialize, Deserialize, Debug)]
