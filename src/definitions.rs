@@ -22,7 +22,7 @@ pub struct Branch {
     pub category: BranchCategory,
     // TODO - Must have only one of product or branches
     pub product: Option<FullProductName>,
-    pub branches: BranchesT,
+    pub branches: Option<BranchesT>,
 }
 
 #[derive(Serialize, Deserialize, Debug)]
