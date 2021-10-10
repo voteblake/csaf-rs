@@ -4,7 +4,7 @@ use url::Url;
 
 use crate::definitions::VersionT;
 
-// https://github.com/oasis-tcs/csaf/blob/master/csaf_2.0/prose/csaf-v2-editor-draft.md#321-document-property
+/// [Document level meta-data](https://github.com/oasis-tcs/csaf/blob/master/csaf_2.0/prose/csaf-v2-editor-draft.md#321-document-property)
 #[derive(Serialize, Deserialize, Debug)]
 pub struct Document {
     pub category: String,
@@ -20,7 +20,7 @@ pub enum CsafVersion {
     TwoDotZero,
 }
 
-// https://github.com/oasis-tcs/csaf/blob/master/csaf_2.0/prose/csaf-v2-editor-draft.md#3218-document-property---publisher
+/// [Publisher property](https://github.com/oasis-tcs/csaf/blob/master/csaf_2.0/prose/csaf-v2-editor-draft.md#3218-document-property---publisher)
 #[derive(Serialize, Deserialize, Debug)]
 pub struct Publisher {
     pub category: PublisherCategory,
@@ -30,6 +30,7 @@ pub struct Publisher {
     pub issuing_authority: Option<String>,
 }
 
+/// [Publisher category](https://github.com/oasis-tcs/csaf/blob/master/csaf_2.0/prose/csaf-v2-editor-draft.md#32181-document-property---publisher---category)
 #[derive(Serialize, Deserialize, Debug)]
 #[serde(rename_all = "lowercase")]
 pub enum PublisherCategory {
@@ -41,7 +42,7 @@ pub enum PublisherCategory {
     Vendor,
 }
 
-// https://github.com/oasis-tcs/csaf/blob/master/csaf_2.0/prose/csaf-v2-editor-draft.md#32112-document-property---tracking
+/// [Tracking metadata](https://github.com/oasis-tcs/csaf/blob/master/csaf_2.0/prose/csaf-v2-editor-draft.md#32112-document-property---tracking)
 #[derive(Serialize, Deserialize, Debug)]
 pub struct Tracking {
     pub current_release_date: DateTime<Utc>,
@@ -54,7 +55,7 @@ pub struct Tracking {
     pub generator: Option<Generator>,
 }
 
-//https://github.com/oasis-tcs/csaf/blob/master/csaf_2.0/prose/csaf-v2-editor-draft.md#321123-document-property---tracking---generator
+/// [Document Generator](https://github.com/oasis-tcs/csaf/blob/master/csaf_2.0/prose/csaf-v2-editor-draft.md#321123-document-property---tracking---generator)
 #[derive(Serialize, Deserialize, Debug)]
 pub struct Generator {
     pub engine: Engine,
@@ -67,6 +68,7 @@ pub struct Engine {
     pub version: Option<String>,
 }
 
+/// [Revision history](https://github.com/oasis-tcs/csaf/blob/master/csaf_2.0/prose/csaf-v2-editor-draft.md#321126-document-property---tracking---revision-history)
 #[derive(Serialize, Deserialize, Debug)]
 pub struct Revision {
     pub date: DateTime<Utc>,
@@ -74,6 +76,7 @@ pub struct Revision {
     pub summary: String,
 }
 
+/// [Document status](https://github.com/oasis-tcs/csaf/blob/master/csaf_2.0/prose/csaf-v2-editor-draft.md#321127-document-property---tracking---status)
 #[derive(Serialize, Deserialize, Debug)]
 #[serde(rename_all = "lowercase")]
 pub enum Status {
