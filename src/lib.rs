@@ -63,4 +63,17 @@ mod tests {
         let document: Csaf = serde_json::from_str(generic).unwrap();
         println!("{:#?}", document);
     }
+
+    #[test]
+    fn first_example_deserializes() {
+        let example = include_str!("../tests/CVE-2018-0171-modified.json");
+        let document: Csaf = serde_json::from_str(example).unwrap();
+        println!("{:#?}", document);
+    }
+    #[test]
+    fn second_example_deserializes() {
+        let example = include_str!("../tests/cvrf-rhba-2018-0489-modified.json");
+        let document: Csaf = serde_json::from_str(example).unwrap();
+        println!("{:#?}", document);
+    }
 }
