@@ -75,6 +75,20 @@ pub struct Engine {
     pub version: Option<String>,
 }
 
+const CARGO_PKG_VERSION: &'static str = env!("CARGO_PKG_VERSION");
+
+impl std::default::Default for Generator {
+    fn default() -> Self {
+        Self {
+            engine: Engine {
+                name: "csaf-rs".to_string(),
+                version: Some(CARGO_PKG_VERSION.to_string()),
+            },
+            date: Some(Utc::now()),
+        }
+    }
+}
+
 /// [Revision history](https://github.com/oasis-tcs/csaf/blob/master/csaf_2.0/prose/csaf-v2-editor-draft.md#321126-document-property---tracking---revision-history)
 #[derive(Serialize, Deserialize, Debug)]
 pub struct Revision {
