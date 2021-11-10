@@ -5,6 +5,7 @@ use url::Url;
 pub(crate) type AcknowledgmentsT = Vec<Acknowledgment>;
 
 // TODO: with at least 1 and at most 4 properties
+#[serde_with::skip_serializing_none]
 #[derive(Serialize, Deserialize, Debug)]
 pub struct Acknowledgment {
     pub names: Option<Vec<String>>,
@@ -16,6 +17,7 @@ pub struct Acknowledgment {
 // https://github.com/oasis-tcs/csaf/blob/master/csaf_2.0/prose/csaf-v2-editor-draft.md#312-branches-type
 pub(crate) type BranchesT = Vec<Branch>;
 
+#[serde_with::skip_serializing_none]
 #[derive(Serialize, Deserialize, Debug, Clone)]
 pub struct Branch {
     pub name: String,
@@ -42,6 +44,7 @@ pub enum BranchCategory {
 }
 
 // https://github.com/oasis-tcs/csaf/blob/master/csaf_2.0/prose/csaf-v2-editor-draft.md#313-full-product-name-type
+#[serde_with::skip_serializing_none]
 #[derive(Serialize, Deserialize, Debug, Clone)]
 pub struct FullProductName {
     pub name: String,
@@ -50,6 +53,7 @@ pub struct FullProductName {
 }
 
 // https://github.com/oasis-tcs/csaf/blob/master/csaf_2.0/prose/csaf-v2-editor-draft.md#3133-full-product-name-type---product-identification-helper
+#[serde_with::skip_serializing_none]
 #[derive(Serialize, Deserialize, Debug, Clone)]
 pub struct ProductIdentificationHelper {
     pub cpe: Option<String>, // TODO: Integrate actual CPE aware data type
@@ -79,6 +83,7 @@ pub(crate) type LangT = String; // TODO: Constrain/validate
 // https://github.com/oasis-tcs/csaf/blob/master/csaf_2.0/prose/csaf-v2-editor-draft.md#315-notes-type
 pub(crate) type NotesT = Vec<Note>;
 
+#[serde_with::skip_serializing_none]
 #[derive(Serialize, Deserialize, Debug)]
 pub struct Note {
     pub category: NoteCategory,
@@ -115,6 +120,7 @@ pub(crate) type ProductsT = Vec<ProductIdT>;
 // https://github.com/oasis-tcs/csaf/blob/master/csaf_2.0/prose/csaf-v2-editor-draft.md#3110-references-type
 pub(crate) type ReferencesT = Vec<Reference>;
 
+#[serde_with::skip_serializing_none]
 #[derive(Serialize, Deserialize, Debug)]
 pub struct Reference {
     pub url: Url,

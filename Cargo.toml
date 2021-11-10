@@ -18,6 +18,7 @@ chrono = { version = "0.4", features = ["serde"] }
 cvss = { version = "1.x", features = ["serde"] }
 rustsec = "0.24"
 crates-index = "0.17"
+serde_with = "1.11"
 
 [dev-dependencies]
 serde_json = "1.0"
