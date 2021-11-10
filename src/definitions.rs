@@ -3,10 +3,10 @@ use std::convert::{TryFrom, TryInto};
 use serde::{Deserialize, Serialize};
 use url::Url;
 
-// https://github.com/oasis-tcs/csaf/blob/master/csaf_2.0/prose/csaf-v2-editor-draft.md#311-acknowledgments-type
 pub(crate) type AcknowledgmentsT = Vec<Acknowledgment>;
 
 // TODO: with at least 1 and at most 4 properties
+/// [Acknowledgment](https://github.com/oasis-tcs/csaf/blob/master/csaf_2.0/prose/csaf-v2-editor-draft.md#311-acknowledgments-type)
 #[serde_with::skip_serializing_none]
 #[derive(Serialize, Deserialize, Debug)]
 pub struct Acknowledgment {
@@ -16,7 +16,7 @@ pub struct Acknowledgment {
     pub urls: Option<Vec<Url>>,
 }
 
-// https://github.com/oasis-tcs/csaf/blob/master/csaf_2.0/prose/csaf-v2-editor-draft.md#312-branches-type
+/// [Branches](https://github.com/oasis-tcs/csaf/blob/master/csaf_2.0/prose/csaf-v2-editor-draft.md#312-branches-type)
 #[derive(Serialize, Deserialize, Debug, Clone)]
 pub struct BranchesT(pub Vec<Branch>);
 
@@ -41,6 +41,7 @@ impl TryFrom<&Branch> for ProductIdT {
     }
 }
 
+/// [Branch](https://github.com/oasis-tcs/csaf/blob/master/csaf_2.0/prose/csaf-v2-editor-draft.md#3121-branches-type---branches)
 #[serde_with::skip_serializing_none]
 #[derive(Serialize, Deserialize, Debug, Clone)]
 pub struct Branch {
@@ -51,6 +52,7 @@ pub struct Branch {
     pub branches: Option<BranchesT>,
 }
 
+/// [Branch Category](https://github.com/oasis-tcs/csaf/blob/master/csaf_2.0/prose/csaf-v2-editor-draft.md#3122-branches-type---category)
 #[derive(Serialize, Deserialize, Debug, Clone)]
 #[serde(rename_all = "snake_case")]
 pub enum BranchCategory {
@@ -67,7 +69,7 @@ pub enum BranchCategory {
     Vendor,
 }
 
-// https://github.com/oasis-tcs/csaf/blob/master/csaf_2.0/prose/csaf-v2-editor-draft.md#313-full-product-name-type
+/// [Full Product Name](https://github.com/oasis-tcs/csaf/blob/master/csaf_2.0/prose/csaf-v2-editor-draft.md#313-full-product-name-type)
 #[serde_with::skip_serializing_none]
 #[derive(Serialize, Deserialize, Debug, Clone)]
 pub struct FullProductName {
@@ -76,7 +78,7 @@ pub struct FullProductName {
     pub product_identification_helper: Option<ProductIdentificationHelper>,
 }
 
-// https://github.com/oasis-tcs/csaf/blob/master/csaf_2.0/prose/csaf-v2-editor-draft.md#3133-full-product-name-type---product-identification-helper
+/// [Product Identification Helper](https://github.com/oasis-tcs/csaf/blob/master/csaf_2.0/prose/csaf-v2-editor-draft.md#3133-full-product-name-type---product-identification-helper)
 #[serde_with::skip_serializing_none]
 #[derive(Serialize, Deserialize, Debug, Clone)]
 pub struct ProductIdentificationHelper {
@@ -89,24 +91,28 @@ pub struct ProductIdentificationHelper {
     pub x_generic_uris: Option<Vec<Url>>,
 }
 
+/// [Hashes](https://github.com/oasis-tcs/csaf/blob/master/csaf_2.0/prose/csaf-v2-editor-draft.md#31332-full-product-name-type---product-identification-helper---hashes)
 #[derive(Serialize, Deserialize, Debug, Clone)]
 pub struct HashCollection {
     pub file_hashes: Vec<HashValue>,
     pub file_name: String,
 }
 
+/// [Hashes](https://github.com/oasis-tcs/csaf/blob/master/csaf_2.0/prose/csaf-v2-editor-draft.md#31332-full-product-name-type---product-identification-helper---hashes)
 #[derive(Serialize, Deserialize, Debug, Clone)]
 pub struct HashValue {
+    // TODO: Validation - These values are derived from the currently supported digests OpenSSL [OPENSSL]. Leading dashs were removed.
     pub algorithm: String,
+    // TODO: Validation  ^[0-9a-fA-F]{32,}$
     pub value: String,
 }
 
-// https://github.com/oasis-tcs/csaf/blob/master/csaf_2.0/prose/csaf-v2-editor-draft.md#314-language-type
+/// [LangT](https://github.com/oasis-tcs/csaf/blob/master/csaf_2.0/prose/csaf-v2-editor-draft.md#314-language-type)
 pub(crate) type LangT = String; // TODO: Constrain/validate
 
-// https://github.com/oasis-tcs/csaf/blob/master/csaf_2.0/prose/csaf-v2-editor-draft.md#315-notes-type
 pub(crate) type NotesT = Vec<Note>;
 
+/// [Notes](https://github.com/oasis-tcs/csaf/blob/master/csaf_2.0/prose/csaf-v2-editor-draft.md#315-notes-type)
 #[serde_with::skip_serializing_none]
 #[derive(Serialize, Deserialize, Debug)]
 pub struct Note {
@@ -116,6 +122,7 @@ pub struct Note {
     pub title: Option<String>,
 }
 
+/// [Notes](https://github.com/oasis-tcs/csaf/blob/master/csaf_2.0/prose/csaf-v2-editor-draft.md#315-notes-type)
 #[derive(Serialize, Deserialize, Debug)]
 #[serde(rename_all = "snake_case")]
 pub enum NoteCategory {
@@ -128,22 +135,22 @@ pub enum NoteCategory {
     Summary,
 }
 
-// https://github.com/oasis-tcs/csaf/blob/master/csaf_2.0/prose/csaf-v2-editor-draft.md#316-product-group-id-type
+/// [Product Group ID](https://github.com/oasis-tcs/csaf/blob/master/csaf_2.0/prose/csaf-v2-editor-draft.md#316-product-group-id-type)
 pub(crate) type ProductGroupIdT = String;
 
-// https://github.com/oasis-tcs/csaf/blob/master/csaf_2.0/prose/csaf-v2-editor-draft.md#317-product-groups-type
+/// [Product Groups](https://github.com/oasis-tcs/csaf/blob/master/csaf_2.0/prose/csaf-v2-editor-draft.md#317-product-groups-type)
 pub(crate) type ProductGroupsT = Vec<ProductGroupIdT>;
 
-// https://github.com/oasis-tcs/csaf/blob/master/csaf_2.0/prose/csaf-v2-editor-draft.md#318-product-id-type
+/// [Product IDs](https://github.com/oasis-tcs/csaf/blob/master/csaf_2.0/prose/csaf-v2-editor-draft.md#318-product-id-type)
 #[derive(Serialize, Deserialize, Debug, Clone)]
 pub struct ProductIdT(pub(crate) String);
 
-// https://github.com/oasis-tcs/csaf/blob/master/csaf_2.0/prose/csaf-v2-editor-draft.md#319-products-type
+/// [Products](https://github.com/oasis-tcs/csaf/blob/master/csaf_2.0/prose/csaf-v2-editor-draft.md#319-products-type)
 pub(crate) type ProductsT = Vec<ProductIdT>;
 
-// https://github.com/oasis-tcs/csaf/blob/master/csaf_2.0/prose/csaf-v2-editor-draft.md#3110-references-type
 pub(crate) type ReferencesT = Vec<Reference>;
 
+/// [References](https://github.com/oasis-tcs/csaf/blob/master/csaf_2.0/prose/csaf-v2-editor-draft.md#3110-references-type)
 #[serde_with::skip_serializing_none]
 #[derive(Serialize, Deserialize, Debug)]
 pub struct Reference {
@@ -152,6 +159,7 @@ pub struct Reference {
     pub category: Option<ReferenceCategory>,
 }
 
+/// [References](https://github.com/oasis-tcs/csaf/blob/master/csaf_2.0/prose/csaf-v2-editor-draft.md#3110-references-type)
 #[derive(Serialize, Deserialize, Debug)]
 #[serde(rename_all = "snake_case")]
 pub enum ReferenceCategory {
@@ -160,6 +168,6 @@ pub enum ReferenceCategory {
     RefSelf,
 }
 
-// https://github.com/oasis-tcs/csaf/blob/master/csaf_2.0/prose/csaf-v2-editor-draft.md#3111-version-type
 // TODO: Contraint/validation
+/// [Version](https://github.com/oasis-tcs/csaf/blob/master/csaf_2.0/prose/csaf-v2-editor-draft.md#3111-version-type)
 pub(crate) type VersionT = String;

@@ -24,6 +24,11 @@ use url::Url;
 //
 // Each RUSTSEC advisory applies to only one 'product' - in this case crate, referred to as Advisory.package
 
+/// Provides a conversion from a [rustsec::Advisory] to a `Csaf` implementing the [VEX profile](https://github.com/oasis-tcs/csaf/blob/master/csaf_2.0/prose/csaf-v2-editor-draft.md#45-profile-5-vex)
+///
+/// Currently functioning and passes validation as a CSAF. Is not strictly valid VEX. VEX requires that each `known_not_affected` product
+/// have an impact statement listed as a [Threat](crate::vulnerability::Threat) with [ThreatCategory](crate::vulnerability::ThreatCategory) `Impact`.
+/// RustSec does not have any metadata that "contain(s) a a description why the vulnerability cannot be exploited".
 impl From<Advisory> for Csaf {
     fn from(input: Advisory) -> Self {
         let advisory_date = input.metadata.date;

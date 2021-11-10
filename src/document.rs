@@ -22,6 +22,7 @@ pub struct Document {
     pub source_lang: Option<LangT>,
 }
 
+/// [CSAF Version](https://github.com/oasis-tcs/csaf/blob/master/csaf_2.0/prose/csaf-v2-editor-draft.md#3214-document-property---csaf-version)
 #[derive(Serialize, Deserialize, Debug)]
 pub enum CsafVersion {
     #[serde(rename = "2.0")]
@@ -73,6 +74,7 @@ pub struct Generator {
     pub date: Option<DateTime<Utc>>,
 }
 
+/// [Generator Engine](https://github.com/oasis-tcs/csaf/blob/master/csaf_2.0/prose/csaf-v2-editor-draft.md#321123-document-property---tracking---generator)
 #[serde_with::skip_serializing_none]
 #[derive(Serialize, Deserialize, Debug)]
 pub struct Engine {
@@ -136,6 +138,7 @@ pub struct Tlp {
     pub url: Option<Url>,
 }
 
+/// [TLP](https://github.com/oasis-tcs/csaf/blob/master/csaf_2.0/prose/csaf-v2-editor-draft.md#32152-document-property---distribution---tlp)
 #[derive(Serialize, Deserialize, Debug)]
 pub enum TlpLabel {
     AMBER,
