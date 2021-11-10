@@ -3,6 +3,7 @@ use serde::{Deserialize, Serialize};
 use crate::definitions::{BranchesT, FullProductName, ProductGroupIdT, ProductIdT};
 
 // https://github.com/oasis-tcs/csaf/blob/master/csaf_2.0/prose/csaf-v2-editor-draft.md#322-product-tree-property
+#[serde_with::skip_serializing_none]
 #[derive(Serialize, Deserialize, Debug)]
 pub struct ProductTree {
     pub branches: Option<BranchesT>,
@@ -11,6 +12,7 @@ pub struct ProductTree {
     pub relationships: Option<Vec<Relationship>>,
 }
 
+#[serde_with::skip_serializing_none]
 #[derive(Serialize, Deserialize, Debug)]
 pub struct ProductGroup {
     pub group_id: ProductGroupIdT,

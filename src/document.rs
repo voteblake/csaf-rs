@@ -5,6 +5,7 @@ use url::Url;
 use crate::definitions::{AcknowledgmentsT, LangT, NotesT, ReferencesT, VersionT};
 
 /// [Document level meta-data](https://github.com/oasis-tcs/csaf/blob/master/csaf_2.0/prose/csaf-v2-editor-draft.md#321-document-property)
+#[serde_with::skip_serializing_none]
 #[derive(Serialize, Deserialize, Debug)]
 pub struct Document {
     pub category: String,
@@ -28,6 +29,7 @@ pub enum CsafVersion {
 }
 
 /// [Publisher property](https://github.com/oasis-tcs/csaf/blob/master/csaf_2.0/prose/csaf-v2-editor-draft.md#3218-document-property---publisher)
+#[serde_with::skip_serializing_none]
 #[derive(Serialize, Deserialize, Debug)]
 pub struct Publisher {
     pub category: PublisherCategory,
@@ -50,6 +52,7 @@ pub enum PublisherCategory {
 }
 
 /// [Tracking metadata](https://github.com/oasis-tcs/csaf/blob/master/csaf_2.0/prose/csaf-v2-editor-draft.md#32112-document-property---tracking)
+#[serde_with::skip_serializing_none]
 #[derive(Serialize, Deserialize, Debug)]
 pub struct Tracking {
     pub current_release_date: DateTime<Utc>,
@@ -63,12 +66,14 @@ pub struct Tracking {
 }
 
 /// [Document Generator](https://github.com/oasis-tcs/csaf/blob/master/csaf_2.0/prose/csaf-v2-editor-draft.md#321123-document-property---tracking---generator)
+#[serde_with::skip_serializing_none]
 #[derive(Serialize, Deserialize, Debug)]
 pub struct Generator {
     pub engine: Engine,
     pub date: Option<DateTime<Utc>>,
 }
 
+#[serde_with::skip_serializing_none]
 #[derive(Serialize, Deserialize, Debug)]
 pub struct Engine {
     pub name: String,
@@ -107,6 +112,7 @@ pub enum Status {
 }
 
 /// [Aggregate severity](https://github.com/oasis-tcs/csaf/blob/master/csaf_2.0/prose/csaf-v2-editor-draft.md#3212-document-property---aggregate-severity)
+#[serde_with::skip_serializing_none]
 #[derive(Serialize, Deserialize, Debug)]
 pub struct AggregateSeverity {
     pub text: String,
@@ -114,6 +120,7 @@ pub struct AggregateSeverity {
 }
 
 /// [Distribution](https://github.com/oasis-tcs/csaf/blob/master/csaf_2.0/prose/csaf-v2-editor-draft.md#3215-document-property---distribution)
+#[serde_with::skip_serializing_none]
 #[derive(Serialize, Deserialize, Debug)]
 pub struct Distribution {
     // TODO: enforce 'with at least 1 of the 2 properties'
@@ -122,6 +129,7 @@ pub struct Distribution {
 }
 
 /// [TLP](https://github.com/oasis-tcs/csaf/blob/master/csaf_2.0/prose/csaf-v2-editor-draft.md#32152-document-property---distribution---tlp)
+#[serde_with::skip_serializing_none]
 #[derive(Serialize, Deserialize, Debug)]
 pub struct Tlp {
     pub label: TlpLabel,

@@ -21,6 +21,7 @@ pub mod definitions;
 pub mod interop;
 
 /// [Top level CSAF structure definition](https://github.com/oasis-tcs/csaf/blob/master/csaf_2.0/prose/csaf-v2-editor-draft.md#32-properties)
+#[serde_with::skip_serializing_none]
 #[derive(Serialize, Deserialize, Debug)]
 pub struct Csaf {
     pub document: Document,
