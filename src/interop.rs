@@ -277,6 +277,7 @@ impl BranchTracking {
         let mut output = Vec::new();
         output.append(&mut self.patched.clone());
         output.append(&mut self.unaffected.clone());
+        output.append(&mut self.vulnerable.clone());
         output
     }
 }
