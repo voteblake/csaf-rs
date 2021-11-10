@@ -1,3 +1,5 @@
+use std::convert::{TryFrom, TryInto};
+
 use serde::{Deserialize, Serialize};
 use url::Url;
 
@@ -15,7 +17,29 @@ pub struct Acknowledgment {
 }
 
 // https://github.com/oasis-tcs/csaf/blob/master/csaf_2.0/prose/csaf-v2-editor-draft.md#312-branches-type
-pub(crate) type BranchesT = Vec<Branch>;
+#[derive(Serialize, Deserialize, Debug, Clone)]
+pub struct BranchesT(pub Vec<Branch>);
+
+impl BranchesT {
+    pub(crate) fn product_ids(&self) -> Option<Vec<ProductIdT>> {
+        if self.0.is_empty() {
+            None
+        } else {
+            Some(self.0.iter().map(|x| x.try_into().unwrap()).collect())
+        }
+    }
+}
+
+impl TryFrom<&Branch> for ProductIdT {
+    type Error = &'static str;
+
+    fn try_from(b: &Branch) -> Result<Self, Self::Error> {
+        match &b.product {
+            Some(p) => Ok(p.product_id.clone()),
+            None => Err("Cannot convert Branch that does not contain a product to a ProductIdT"),
+        }
+    }
+}
 
 #[serde_with::skip_serializing_none]
 #[derive(Serialize, Deserialize, Debug, Clone)]
