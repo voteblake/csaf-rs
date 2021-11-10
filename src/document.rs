@@ -82,7 +82,7 @@ pub struct Engine {
     pub version: Option<String>,
 }
 
-const CARGO_PKG_VERSION: &'static str = env!("CARGO_PKG_VERSION");
+const CARGO_PKG_VERSION: &str = env!("CARGO_PKG_VERSION");
 
 impl std::default::Default for Generator {
     fn default() -> Self {
