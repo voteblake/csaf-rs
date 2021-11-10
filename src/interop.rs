@@ -1,26 +1,27 @@
-use std::convert::TryInto;
+use std::convert::{TryFrom, TryInto};
 
 use crate::{
-    definitions::{FullProductName, Reference},
+    definitions::{
+        Branch, BranchCategory, FullProductName, Note, NoteCategory, ProductIdT, Reference,
+    },
     document::{
         CsafVersion, Document, Generator, Publisher, PublisherCategory, Revision, Status, Tracking,
     },
     product_tree::ProductTree,
-    vulnerability::{Vulnerability, VulnerabilityId},
+    vulnerability::{
+        ProductStatus, Remediation, RemediationCategory, Score, Vulnerability, VulnerabilityId,
+    },
     Csaf,
 };
 use chrono::{TimeZone, Utc};
-use rustsec::Advisory;
+use rustsec::{advisory::Versions, Advisory};
 use url::Url;
-
-const PRODUCT_ID: &str = "PID-1";
 
 // ASSUMPTIONS:
 // There is no 'history' in RUSTSEC advisories, so current advisory IS initial advisory
 // TODO: Should insert two revisions in the case where withdrawn in set
 //
-// Each RUSTSEC advisory applies to only one 'product' - in this case crate, thus can be referred to
-// by one product_id, which must only be unique with the document.
+// Each RUSTSEC advisory applies to only one 'product' - in this case crate, referred to as Advisory.package
 
 impl From<Advisory> for Csaf {
     fn from(input: Advisory) -> Self {
@@ -33,6 +34,9 @@ impl From<Advisory> for Csaf {
             )
             .and_hms(0, 0, 0);
 
+        let branches =
+            BranchTracking::extract_branches(input.metadata.package.as_ref(), &input.versions);
+
         Csaf {
             document: Document {
                 category: "vex".to_string(),
@@ -43,7 +47,7 @@ impl From<Advisory> for Csaf {
                     contact_details: None,
                     issuing_authority: None,
                 },
-                title: input.metadata.title,
+                title: input.metadata.title.clone(),
                 tracking: Tracking {
                     current_release_date: advisory_date,
                     id: input.metadata.id.to_string(),
@@ -51,7 +55,7 @@ impl From<Advisory> for Csaf {
                     revision_history: vec![Revision {
                         date: advisory_date,
                         number: "1".to_string(),
-                        summary: "RUSTSEC advisory".to_string(),
+                        summary: "RUSTSEC Advisory".to_string(),
                     }],
                     status: Status::Final,
                     version: "1".to_string(),
@@ -94,12 +98,13 @@ impl From<Advisory> for Csaf {
                 source_lang: None,
             },
             product_tree: Some(ProductTree {
-                branches: None,
-                full_product_names: Some(vec![FullProductName {
+                branches: Some(vec![Branch {
                     name: input.metadata.package.to_string(),
-                    product_id: PRODUCT_ID.to_string(),
-                    product_identification_helper: None,
+                    category: BranchCategory::ProductName,
+                    product: None,
+                    branches: Some(branches.all()),
                 }]),
+                full_product_names: None,
                 product_groups: None,
                 relationships: None,
             }),
@@ -123,16 +128,204 @@ impl From<Advisory> for Csaf {
                     }
                     .to_string(),
                 }),
-                involvements: todo!(),
-                notes: todo!(),
-                product_status: todo!(),
-                references: todo!(),
-                release_date: todo!(),
-                remediations: todo!(),
-                scores: todo!(),
-                threats: todo!(),
-                title: todo!(),
+                involvements: None,
+                notes: Some(vec![Note {
+                    category: NoteCategory::Description,
+                    text: input.metadata.description,
+                    audience: None,
+                    title: None,
+                }]),
+                product_status: Some(ProductStatus {
+                    first_affected: None,
+                    first_fixed: None,
+                    // TODO: DRY - this pattern is repeated, need a shorthand Vec<Branches> -> Vec<ProductIdT>
+                    fixed: Some(
+                        branches
+                            .patched
+                            .iter()
+                            .map(|x| x.try_into().unwrap())
+                            .collect(),
+                    ),
+                    known_affected: Some(
+                        branches
+                            .vulnerable
+                            .iter()
+                            .map(|x| x.try_into().unwrap())
+                            .collect(),
+                    ),
+                    known_not_affected: Some(
+                        branches
+                            .unaffected
+                            .iter()
+                            .map(|x| x.try_into().unwrap())
+                            .collect(),
+                    ),
+                    last_affected: None,
+                    recommended: None,
+                    under_investigation: None,
+                }),
+                references: None,
+                release_date: None,
+                remediations: if !branches.patched.is_empty() {
+                    Some(vec![Remediation {
+                        category: RemediationCategory::VendorFix,
+                        details: "Updated crate versions available".to_string(),
+                        date: None,
+                        entitlements: None,
+                        group_ids: None,
+                        product_ids: Some(
+                            branches
+                                .vulnerable
+                                .iter()
+                                .map(|x| x.try_into().unwrap())
+                                .collect(),
+                        ),
+                        restart_required: None,
+                        url: None,
+                    }])
+                } else {
+                    None
+                },
+                scores: input.metadata.cvss.map(|b| {
+                    vec![Score {
+                        products: branches
+                            .vulnerable
+                            .iter()
+                            .map(|x| x.try_into().unwrap())
+                            .collect(),
+                        cvss_v2: None,
+                        cvss_v3: Some(b.into()),
+                    }]
+                }),
+                threats: None,
+                title: Some(input.metadata.title),
             }]),
         }
+    }
+}
+
+struct BranchTracking {
+    patched: Vec<Branch>,
+    unaffected: Vec<Branch>,
+    vulnerable: Vec<Branch>,
+}
+
+impl BranchTracking {
+    fn extract_branches(package: &str, versions: &Versions) -> Self {
+        let mut output = Self {
+            patched: Vec::new(),
+            unaffected: Vec::new(),
+            vulnerable: Vec::new(),
+        };
+
+        let mut id_counter: usize = 1;
+
+        let index = crates_index::Index::new_cargo_default();
+        if !index.exists() {
+            index
+                .retrieve()
+                .expect("Must be able to access crates.io index")
+        }
+
+        let registry_crate = index
+            .crate_(package)
+            .expect("package name must match name from crates.io registry");
+
+        let registry_versions = registry_crate.versions();
+
+        // ASSUMPTION: A version can only be one of patched, unaffected, or affected
+        // TODO: When I'm reaching for loop labels something has gone terribly wrong
+        'outer: for version in registry_versions {
+            let rustsec_version = rustsec::registry::IndexPackage::from(version).version;
+
+            // TODO: DRY
+            for pattern in versions.unaffected() {
+                if pattern.matches(&rustsec_version) {
+                    output.unaffected.push(branch_with_package(
+                        &rustsec_version,
+                        package,
+                        id_counter,
+                    ));
+                    id_counter += 1;
+                    continue 'outer;
+                }
+            }
+            for pattern in versions.patched() {
+                if pattern.matches(&rustsec_version) {
+                    output
+                        .patched
+                        .push(branch_with_package(&rustsec_version, package, id_counter));
+                    id_counter += 1;
+                    continue 'outer;
+                }
+            }
+
+            // At this point the version has matched none of the unaffected or patched patterns, so can be evaulated
+            // as potentially vulnerable
+            if versions.is_vulnerable(&rustsec_version) {
+                output
+                    .vulnerable
+                    .push(branch_with_package(&rustsec_version, package, id_counter));
+                id_counter += 1;
+            }
+        }
+
+        output
+    }
+
+    fn all(&self) -> Vec<Branch> {
+        let mut output = Vec::new();
+        output.append(&mut self.patched.clone());
+        output.append(&mut self.unaffected.clone());
+        output
+    }
+}
+
+fn branch_with_package(version: &rustsec::Version, package: &str, id_counter: usize) -> Branch {
+    Branch {
+        name: version.to_string(),
+        category: BranchCategory::ProductVersion,
+        product: Some(FullProductName {
+            name: format!("{} {}", package, version),
+            product_id: ProductIdT(format!("{}-{}", package.to_uppercase(), id_counter)),
+            product_identification_helper: None,
+        }),
+        branches: None,
+    }
+}
+
+impl TryFrom<&Branch> for ProductIdT {
+    type Error = &'static str;
+
+    fn try_from(b: &Branch) -> Result<Self, Self::Error> {
+        match &b.product {
+            Some(p) => Ok(p.product_id.clone()),
+            None => Err("Cannot convert Branch that does not contain a product to a ProductIdT"),
+        }
+    }
+}
+
+#[cfg(test)]
+mod tests {
+    use std::str::FromStr;
+
+    use super::*;
+    use serde_json;
+
+    #[test]
+    fn example_advisory_deserializes() {
+        // TODO: Reuse
+        let example = include_str!("../tests/RUSTSEC-2021-0093.md");
+        let advisory = Advisory::from_str(example).unwrap();
+        println!("{:#?}", advisory);
+        let _document = crate::Csaf::from(advisory);
+    }
+
+    #[test]
+    fn example_advisory_serializes() {
+        let example = include_str!("../tests/RUSTSEC-2021-0093.md");
+        let advisory = Advisory::from_str(example).unwrap();
+        let document = crate::Csaf::from(advisory);
+        println!("{}", serde_json::to_string_pretty(&document).unwrap());
     }
 }

@@ -16,7 +16,7 @@ pub struct Acknowledgment {
 // https://github.com/oasis-tcs/csaf/blob/master/csaf_2.0/prose/csaf-v2-editor-draft.md#312-branches-type
 pub(crate) type BranchesT = Vec<Branch>;
 
-#[derive(Serialize, Deserialize, Debug)]
+#[derive(Serialize, Deserialize, Debug, Clone)]
 pub struct Branch {
     pub name: String,
     pub category: BranchCategory,
@@ -25,7 +25,7 @@ pub struct Branch {
     pub branches: Option<BranchesT>,
 }
 
-#[derive(Serialize, Deserialize, Debug)]
+#[derive(Serialize, Deserialize, Debug, Clone)]
 #[serde(rename_all = "snake_case")]
 pub enum BranchCategory {
     Architecture,
@@ -42,7 +42,7 @@ pub enum BranchCategory {
 }
 
 // https://github.com/oasis-tcs/csaf/blob/master/csaf_2.0/prose/csaf-v2-editor-draft.md#313-full-product-name-type
-#[derive(Serialize, Deserialize, Debug)]
+#[derive(Serialize, Deserialize, Debug, Clone)]
 pub struct FullProductName {
     pub name: String,
     pub product_id: ProductIdT,
@@ -50,7 +50,7 @@ pub struct FullProductName {
 }
 
 // https://github.com/oasis-tcs/csaf/blob/master/csaf_2.0/prose/csaf-v2-editor-draft.md#3133-full-product-name-type---product-identification-helper
-#[derive(Serialize, Deserialize, Debug)]
+#[derive(Serialize, Deserialize, Debug, Clone)]
 pub struct ProductIdentificationHelper {
     pub cpe: Option<String>, // TODO: Integrate actual CPE aware data type
     pub hashes: Option<Vec<HashCollection>>,
@@ -61,13 +61,13 @@ pub struct ProductIdentificationHelper {
     pub x_generic_uris: Option<Vec<Url>>,
 }
 
-#[derive(Serialize, Deserialize, Debug)]
+#[derive(Serialize, Deserialize, Debug, Clone)]
 pub struct HashCollection {
     pub file_hashes: Vec<HashValue>,
     pub file_name: String,
 }
 
-#[derive(Serialize, Deserialize, Debug)]
+#[derive(Serialize, Deserialize, Debug, Clone)]
 pub struct HashValue {
     pub algorithm: String,
     pub value: String,
@@ -106,7 +106,8 @@ pub(crate) type ProductGroupIdT = String;
 pub(crate) type ProductGroupsT = Vec<ProductGroupIdT>;
 
 // https://github.com/oasis-tcs/csaf/blob/master/csaf_2.0/prose/csaf-v2-editor-draft.md#318-product-id-type
-pub(crate) type ProductIdT = String;
+#[derive(Serialize, Deserialize, Debug, Clone)]
+pub struct ProductIdT(pub(crate) String);
 
 // https://github.com/oasis-tcs/csaf/blob/master/csaf_2.0/prose/csaf-v2-editor-draft.md#319-products-type
 pub(crate) type ProductsT = Vec<ProductIdT>;
