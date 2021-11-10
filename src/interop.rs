@@ -28,7 +28,7 @@ use url::Url;
 ///
 /// Currently functioning and passes validation as a CSAF. Is not strictly valid VEX. VEX requires that each `known_not_affected` product
 /// have an impact statement listed as a [Threat](crate::vulnerability::Threat) with [ThreatCategory](crate::vulnerability::ThreatCategory) `Impact`.
-/// RustSec does not have any metadata that "contain(s) a a description why the vulnerability cannot be exploited".
+/// RustSec does not have any metadata that "contain(s) a description why the vulnerability cannot be exploited".
 impl From<Advisory> for Csaf {
     fn from(input: Advisory) -> Self {
         let advisory_date = input.metadata.date;

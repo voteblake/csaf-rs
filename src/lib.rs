@@ -2,11 +2,11 @@
 //!
 //! A lovingly hand-crafted implementation of [CSAF](https://www.oasis-open.org/committees/tc_home.php?wg_abbrev=csaf) for Rust. Currently,
 //! based on the [v2.0 editor draft](https://github.com/oasis-tcs/csaf/blob/master/csaf_2.0/prose/csaf-v2-editor-draft.md). Should be
-//! considered strictly less-strict than the spec right now - valid CSAF should deserialize successfully, but invalid CSAF may also
-//! succeed and the library may generate invalid CSAF.
+//! considered strictly less-strict than the spec - valid CSAF should deserialize successfully, but invalid CSAF may also
+//! succeed and the library may generate invalid CSAF. The goal is full conformance to the spec.
 //!
-//! Documentaiton is provided as links to the upstream CSAF repository. This is because it is unclear to me if the upstream license
-//! allows for inclusion of the documentation in to this repository directly. Inclusion of details from upstream
+//! Documentation is provided as links to the upstream CSAF repository. This is because it is unclear if the upstream license
+//! allows for inclusion of the documentation in this repository directly. Inclusion of details from upstream
 //!  would be more usable, but without guidance on license compatibility I'm only comfortable providing links for now.
 
 use serde::{Deserialize, Serialize};
@@ -26,7 +26,7 @@ mod interop;
 
 /// [Top level CSAF structure definition](https://github.com/oasis-tcs/csaf/blob/master/csaf_2.0/prose/csaf-v2-editor-draft.md#32-properties)
 ///
-/// Interoperatbility with [RustSec](https://rustsec.org/) advisories is profivided by a `From` implementation.
+/// Interoperatbility with [RustSec](https://rustsec.org/) advisories is provided by a `From` implementation.
 #[serde_with::skip_serializing_none]
 #[derive(Serialize, Deserialize, Debug)]
 pub struct Csaf {
