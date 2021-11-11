@@ -8,7 +8,7 @@ pub(crate) type AcknowledgmentsT = Vec<Acknowledgment>;
 // TODO: with at least 1 and at most 4 properties
 /// [Acknowledgment](https://github.com/oasis-tcs/csaf/blob/master/csaf_2.0/prose/csaf-v2-editor-draft.md#311-acknowledgments-type)
 #[serde_with::skip_serializing_none]
-#[derive(Serialize, Deserialize, Debug)]
+#[derive(Serialize, Deserialize, Debug, Clone)]
 pub struct Acknowledgment {
     pub names: Option<Vec<String>>,
     pub organization: Option<String>,
@@ -114,7 +114,7 @@ pub(crate) type NotesT = Vec<Note>;
 
 /// [Notes](https://github.com/oasis-tcs/csaf/blob/master/csaf_2.0/prose/csaf-v2-editor-draft.md#315-notes-type)
 #[serde_with::skip_serializing_none]
-#[derive(Serialize, Deserialize, Debug)]
+#[derive(Serialize, Deserialize, Debug, Clone)]
 pub struct Note {
     pub category: NoteCategory,
     pub text: String,
@@ -123,7 +123,7 @@ pub struct Note {
 }
 
 /// [Notes](https://github.com/oasis-tcs/csaf/blob/master/csaf_2.0/prose/csaf-v2-editor-draft.md#315-notes-type)
-#[derive(Serialize, Deserialize, Debug)]
+#[derive(Serialize, Deserialize, Debug, Clone)]
 #[serde(rename_all = "snake_case")]
 pub enum NoteCategory {
     Description,
@@ -152,7 +152,7 @@ pub(crate) type ReferencesT = Vec<Reference>;
 
 /// [References](https://github.com/oasis-tcs/csaf/blob/master/csaf_2.0/prose/csaf-v2-editor-draft.md#3110-references-type)
 #[serde_with::skip_serializing_none]
-#[derive(Serialize, Deserialize, Debug)]
+#[derive(Serialize, Deserialize, Debug, Clone)]
 pub struct Reference {
     pub url: Url,
     pub summary: String,
@@ -160,7 +160,7 @@ pub struct Reference {
 }
 
 /// [References](https://github.com/oasis-tcs/csaf/blob/master/csaf_2.0/prose/csaf-v2-editor-draft.md#3110-references-type)
-#[derive(Serialize, Deserialize, Debug)]
+#[derive(Serialize, Deserialize, Debug, Clone)]
 #[serde(rename_all = "snake_case")]
 pub enum ReferenceCategory {
     External,
