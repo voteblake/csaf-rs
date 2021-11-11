@@ -143,7 +143,7 @@ pub(crate) type ProductGroupsT = Vec<ProductGroupIdT>;
 
 /// [Product IDs](https://github.com/oasis-tcs/csaf/blob/master/csaf_2.0/prose/csaf-v2-editor-draft.md#318-product-id-type)
 #[derive(Serialize, Deserialize, Debug, Clone)]
-pub struct ProductIdT(pub(crate) String);
+pub struct ProductIdT(pub String);
 
 /// [Products](https://github.com/oasis-tcs/csaf/blob/master/csaf_2.0/prose/csaf-v2-editor-draft.md#319-products-type)
 pub(crate) type ProductsT = Vec<ProductIdT>;
