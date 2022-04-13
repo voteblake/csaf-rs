@@ -3,9 +3,9 @@ name = "csaf"
 description = "An implementation of the Common Security Advisory Framework (CSAF)"
 keywords    = ["security", "advisory", "vulnerability"]
 categories = ["parser-implementations"]
-version = "0.3.2"
+version = "0.4.0"
 edition = "2021"
-rust-version = "1.56.0"
+rust-version = "1.56.1"
 authors = ["Blake Johnson"]
 license = "MIT"
 repository = "https://github.com/voteblake/csaf-rs"
@@ -13,13 +13,13 @@ repository = "https://github.com/voteblake/csaf-rs"
 # See more keys and their definitions at https://doc.rust-lang.org/cargo/reference/manifest.html
 
 [dependencies]
-serde = { version = "1.0", features = ["derive"] }
-url = { version = "2.x", features = ["serde"] }
+serde = { version = "1", features = ["derive"] }
+url = { version = "2", features = ["serde"] }
 chrono = { version = "0.4", features = ["serde"] }
-cvss = { version = "1.x", features = ["serde"] }
-rustsec = "0.24"
+cvss = { version = "1", features = ["serde"] }
+rustsec = "0.25"
 crates-index = "0.17"
-serde_with = "1.11"
+serde_with = "1"
 
 [dev-dependencies]
-serde_json = "1.0"
+serde_json = "1"
