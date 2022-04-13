@@ -169,7 +169,14 @@ impl From<Advisory> for Csaf {
                 },
                 scores: input.metadata.cvss.map(|b| {
                     vec![Score {
-                        products: branches.vulnerable.product_ids().unwrap(),
+                        products: branches
+                            .vulnerable
+                            .product_ids()
+                            // Case where no version is actually vulnerable
+                            .unwrap_or_else(|| {
+                                println!("INVALID Product ID");
+                                vec![ProductIdT("INVALID".to_string())]
+                            }),
                         cvss_v2: None,
                         cvss_v3: Some(b.into()),
                     }]
@@ -298,5 +305,20 @@ mod tests {
         let advisory = Advisory::from_str(example).unwrap();
         let document = crate::Csaf::from(advisory);
         println!("{}", serde_json::to_string_pretty(&document).unwrap());
+    }
+
+    #[test]
+    #[ignore]
+    fn walk_database() {
+        let db =
+            rustsec::database::Database::fetch().expect("Need access to RustSec git repository");
+
+        for advisory in db.into_iter() {
+            println!(
+                "{} {} {:?}",
+                advisory.metadata.id, advisory.metadata.package, advisory.metadata.collection
+            );
+            let _document = crate::Csaf::from(advisory);
+        }
     }
 }

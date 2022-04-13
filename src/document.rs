@@ -8,6 +8,7 @@ use crate::definitions::{AcknowledgmentsT, LangT, NotesT, ReferencesT, VersionT}
 #[serde_with::skip_serializing_none]
 #[derive(Serialize, Deserialize, Debug)]
 pub struct Document {
+    /// [See Category specification](https://github.com/oasis-tcs/csaf/blob/master/csaf_2.0/prose/csaf-v2-editor-draft.md#3213-document-property---category)
     pub category: String,
     pub publisher: Publisher,
     pub title: String,
