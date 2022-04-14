@@ -64,6 +64,7 @@ pub enum BranchCategory {
     ProductFamily,
     ProductName,
     ProductVersion,
+    ProductVersionRange,
     ServicePack,
     Specification,
     Vendor,
@@ -84,9 +85,10 @@ pub struct FullProductName {
 pub struct ProductIdentificationHelper {
     pub cpe: Option<String>, // TODO: Integrate actual CPE aware data type
     pub hashes: Option<Vec<HashCollection>>,
+    pub model_numbers: Option<Vec<String>>, // TODO: No empty strings, enforce unique
     pub purl: Option<String>, // TODO: Validation https://github.com/oasis-tcs/csaf/blob/master/csaf_2.0/prose/csaf-v2-editor-draft.md#31333-full-product-name-type---product-identification-helper---purl
     pub sbom_urls: Option<Vec<Url>>,
-    pub serial_numbers: Option<Vec<String>>,
+    pub serial_numbers: Option<Vec<String>>, // TODO: No empty strings, enforce unique
     pub skus: Option<Vec<String>>,
     pub x_generic_uris: Option<Vec<Url>>,
 }

@@ -6,7 +6,8 @@ use crate::{
         Reference,
     },
     document::{
-        CsafVersion, Document, Generator, Publisher, PublisherCategory, Revision, Status, Tracking,
+        Category, CsafVersion, Document, Generator, Publisher, PublisherCategory, Revision, Status,
+        Tracking,
     },
     product_tree::ProductTree,
     vulnerability::{
@@ -15,7 +16,7 @@ use crate::{
     Csaf,
 };
 use chrono::{TimeZone, Utc};
-use rustsec::{advisory::Versions, Advisory};
+use rustsec::{advisory::Versions, registry::IndexPackage, Advisory};
 use url::Url;
 
 // ASSUMPTIONS:
@@ -45,7 +46,7 @@ impl From<Advisory> for Csaf {
 
         Csaf {
             document: Document {
-                category: "vex".to_string(),
+                category: Category::Vex,
                 publisher: Publisher {
                     category: PublisherCategory::Coordinator,
                     name: "RUSTSEC".to_string(),
@@ -62,6 +63,7 @@ impl From<Advisory> for Csaf {
                         date: advisory_date,
                         number: "1".to_string(),
                         summary: "RUSTSEC Advisory".to_string(),
+                        legacy_version: None,
                     }],
                     status: Status::Final,
                     version: "1".to_string(),
@@ -123,17 +125,18 @@ impl From<Advisory> for Csaf {
                 },
                 cwe: None,
                 discovery_date: None,
-                id: Some(VulnerabilityId {
+                flags: None,
+                ids: Some(vec![VulnerabilityId {
                     text: input.metadata.id.to_string(),
                     system_name: match input.metadata.id.kind() {
-                        rustsec::advisory::id::Kind::RUSTSEC => "RUSTSEC",
-                        rustsec::advisory::id::Kind::CVE => "CVE",
-                        rustsec::advisory::id::Kind::GHSA => "GHSA",
-                        rustsec::advisory::id::Kind::TALOS => "Talos",
+                        rustsec::advisory::id::Kind::RustSec => "RUSTSEC",
+                        rustsec::advisory::id::Kind::Cve => "CVE",
+                        rustsec::advisory::id::Kind::Ghsa => "GHSA",
+                        rustsec::advisory::id::Kind::Talos => "Talos",
                         _ => "Other",
                     }
                     .to_string(),
-                }),
+                }]),
                 involvements: None,
                 notes: Some(vec![Note {
                     category: NoteCategory::Description,
@@ -220,7 +223,7 @@ impl BranchTracking {
         // ASSUMPTION: A version can only be one of patched, unaffected, or affected
         // TODO: When I'm reaching for loop labels something has gone terribly wrong
         'outer: for version in registry_versions {
-            let rustsec_version = rustsec::registry::IndexPackage::from(version).version;
+            let rustsec_version = IndexPackage::from(version).version;
 
             // TODO: DRY
             for pattern in versions.unaffected() {

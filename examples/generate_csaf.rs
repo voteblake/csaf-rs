@@ -4,11 +4,11 @@ use chrono::Utc;
 use csaf::{
     definitions::{Branch, BranchCategory, BranchesT, FullProductName, ProductIdT},
     document::{
-        CsafVersion, Distribution, Document, Generator, Publisher, PublisherCategory, Revision,
-        Status, Tlp, TlpLabel, Tracking,
+        Category, CsafVersion, Distribution, Document, Generator, Publisher, PublisherCategory,
+        Revision, Status, Tlp, TlpLabel, Tracking,
     },
     product_tree::ProductTree,
-    vulnerability::{ProductStatus, Threat, ThreatCategory, Vulnerability},
+    vulnerability::{Flag, FlagLabel, ProductStatus, Threat, ThreatCategory, Vulnerability},
     Csaf,
 };
 use url::Url;
@@ -68,20 +68,31 @@ fn main() {
 
     for vuln in &mut vulns {
         // Set our product as the product in the product status instead of the upstream product from the advisory
-        // Clear all upstream specific product identifiers and metadat
+        // Clear all upstream specific product identifiers and metadata
+
+        let product_id_list = Some(vec![ProductIdT("CSAF-1".to_string())]);
+
         vuln.remediations.take();
         vuln.product_status.take();
         vuln.scores.take();
+
         vuln.product_status = Some(ProductStatus {
             first_affected: None,
             first_fixed: None,
             fixed: None,
             known_affected: None,
-            known_not_affected: Some(vec![ProductIdT("CSAF-1".to_string())]),
+            known_not_affected: product_id_list.clone(),
             last_affected: None,
             recommended: None,
             under_investigation: None,
         });
+
+        vuln.flags = Some(vec![Flag {
+            label: FlagLabel::VulnerableCodeNotInExecutePath,
+            date: Some(now),
+            group_ids: None,
+            product_ids: product_id_list.clone(),
+        }]);
 
         // Generate the VEX required threat statemtent for a known_not_affected package
         vuln.threats = Some(vec![Threat {
@@ -89,13 +100,13 @@ fn main() {
             details: "The vulnerability impacts calls to the `localtime_r` function. `csaf` does not use that function directly or call any function that uses that function transitively.".to_string(),
             date: Some(now),
             group_ids: None,
-            product_ids: Some(vec![ProductIdT("CSAF-1".to_string())]),
+            product_ids: product_id_list,
         }])
     }
 
     let c = Csaf {
         document: Document {
-            category: "vex".to_string(),
+            category: Category::Vex,
             publisher: Publisher {
                 category: PublisherCategory::Vendor,
                 name: "Blake Johnson".to_string(),
@@ -110,9 +121,9 @@ fn main() {
                 initial_release_date: now,
                 revision_history: vec![Revision {
                     date: now,
-                    // Existence is pain
                     number: "1".to_string(),
                     summary: "Initial release".to_string(),
+                    legacy_version: None,
                 }],
                 status: Status::Draft,
                 version: "1".to_string(),

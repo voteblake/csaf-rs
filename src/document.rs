@@ -1,3 +1,5 @@
+use std::{fmt::Display, str::FromStr};
+
 use chrono::{DateTime, Utc};
 use serde::{Deserialize, Serialize};
 use url::Url;
@@ -9,7 +11,8 @@ use crate::definitions::{AcknowledgmentsT, LangT, NotesT, ReferencesT, VersionT}
 #[derive(Serialize, Deserialize, Debug)]
 pub struct Document {
     /// [See Category specification](https://github.com/oasis-tcs/csaf/blob/master/csaf_2.0/prose/csaf-v2-editor-draft.md#3213-document-property---category)
-    pub category: String,
+    #[serde(with = "serde_with::rust::display_fromstr")]
+    pub category: Category,
     pub publisher: Publisher,
     pub title: String,
     pub tracking: Tracking,
@@ -21,6 +24,42 @@ pub struct Document {
     pub notes: Option<NotesT>,
     pub references: Option<ReferencesT>,
     pub source_lang: Option<LangT>,
+}
+
+#[derive(Debug)]
+pub enum Category {
+    Base,
+    SecurityAdvisory,
+    Vex,
+    Other(String),
+}
+
+// TODO: Following feels repetitive, may be a more direct way to represent
+
+impl FromStr for Category {
+    type Err = std::convert::Infallible;
+    // TODO: Should actually check regex for other since I'm doing this whole song and dance now anyway
+    // ^[^\\s\\-_\\.](.*[^\\s\\-_\\.])?$
+
+    fn from_str(s: &str) -> Result<Self, Self::Err> {
+        Ok(match s {
+            "csaf_base" => Self::Base,
+            "csaf_security_advisory" => Self::SecurityAdvisory,
+            "csaf_vex" => Self::Vex,
+            _ => Self::Other(s.to_owned()),
+        })
+    }
+}
+
+impl Display for Category {
+    fn fmt(&self, f: &mut std::fmt::Formatter<'_>) -> std::fmt::Result {
+        match self {
+            Self::Base => write!(f, "csaf_base"),
+            Self::SecurityAdvisory => write!(f, "csaf_security_advisory"),
+            Self::Vex => write!(f, "csaf_vex"),
+            Self::Other(s) => write!(f, "{}", s),
+        }
+    }
 }
 
 /// [CSAF Version](https://github.com/oasis-tcs/csaf/blob/master/csaf_2.0/prose/csaf-v2-editor-draft.md#3214-document-property---csaf-version)
@@ -98,9 +137,11 @@ impl std::default::Default for Generator {
 }
 
 /// [Revision history](https://github.com/oasis-tcs/csaf/blob/master/csaf_2.0/prose/csaf-v2-editor-draft.md#321126-document-property---tracking---revision-history)
+#[serde_with::skip_serializing_none]
 #[derive(Serialize, Deserialize, Debug)]
 pub struct Revision {
     pub date: DateTime<Utc>,
+    pub legacy_version: Option<String>,
     pub number: VersionT,
     pub summary: String,
 }
