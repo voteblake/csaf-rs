@@ -181,7 +181,7 @@ impl From<Advisory> for Csaf {
                                 vec![ProductIdT("INVALID".to_string())]
                             }),
                         cvss_v2: None,
-                        cvss_v3: Some(b.into()),
+                        cvss_v3: Some(b),
                     }]
                 }),
                 threats: None,
