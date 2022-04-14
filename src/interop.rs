@@ -208,15 +208,13 @@ impl BranchTracking {
         let mut id_counter: usize = 1;
 
         let index = crates_index::Index::new_cargo_default();
-        if !index.exists() {
-            index
-                .retrieve()
-                .expect("Must be able to access crates.io index")
-        }
+        index
+            .retrieve_or_update()
+            .expect("Must be able to access crates.io index");
 
         let registry_crate = index
             .crate_(package)
-            .expect("package name must match name from crates.io registry");
+            .expect("Package name must match name from crates.io registry");
 
         let registry_versions = registry_crate.versions();
 
