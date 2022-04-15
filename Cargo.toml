@@ -17,9 +17,14 @@ serde = { version = "1", features = ["derive"] }
 url = { version = "2", features = ["serde"] }
 chrono = { version = "0.4", features = ["serde"] }
 cvss = { version = "1", features = ["serde"] }
-rustsec = "0.25"
-crates-index = "0.17"
+rustsec = { version = "0.25", optional = true }
+# Has to be kept in sync with version used by rustsec
+crates-index = { version = "0.17", optional = true }
 serde_with = "1"
+
+[features]
+default = ["rustsec-interop"]
+rustsec-interop = ["rustsec", "crates-index"]
 
 [dev-dependencies]
 serde_json = "1"
