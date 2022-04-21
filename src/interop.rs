@@ -5,7 +5,7 @@ mod rustsec {
     use crate::{
         definitions::{
             Branch, BranchCategory, BranchesT, FullProductName, Note, NoteCategory, ProductIdT,
-            Reference,
+            ProductIdentificationHelper, Reference,
         },
         document::{
             Category, CsafVersion, Document, Generator, Publisher, PublisherCategory, Revision,
@@ -18,6 +18,7 @@ mod rustsec {
         Csaf,
     };
     use chrono::{TimeZone, Utc};
+    use packageurl::PackageUrl;
     use rustsec::{advisory::Versions, registry::IndexPackage, Advisory};
     use url::Url;
 
@@ -280,7 +281,21 @@ mod rustsec {
             product: Some(FullProductName {
                 name: format!("{} {}", package, version),
                 product_id: ProductIdT(format!("{}-{}", package.to_uppercase(), id_counter)),
-                product_identification_helper: None,
+                product_identification_helper: Some(ProductIdentificationHelper {
+                    cpe: None,
+                    hashes: None,
+                    model_numbers: None,
+                    purl: Some(
+                        PackageUrl::new("cargo", package.to_string())
+                            .unwrap()
+                            .with_version(version.to_string())
+                            .to_owned(),
+                    ),
+                    sbom_urls: None,
+                    serial_numbers: None,
+                    skus: None,
+                    x_generic_uris: None,
+                }),
             }),
             branches: None,
         }

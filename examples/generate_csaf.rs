@@ -2,7 +2,9 @@ use std::str::FromStr;
 
 use chrono::Utc;
 use csaf::{
-    definitions::{Branch, BranchCategory, BranchesT, FullProductName, ProductIdT},
+    definitions::{
+        Branch, BranchCategory, BranchesT, FullProductName, ProductIdT, ProductIdentificationHelper,
+    },
     document::{
         Category, CsafVersion, Distribution, Document, Generator, Publisher, PublisherCategory,
         Revision, Status, Tlp, TlpLabel, Tracking,
@@ -11,6 +13,7 @@ use csaf::{
     vulnerability::{Flag, FlagLabel, ProductStatus, Threat, ThreatCategory, Vulnerability},
     Csaf,
 };
+use packageurl::PackageUrl;
 use url::Url;
 
 // Tracking list of improvements as I try to use this to generate a single advisory
@@ -156,7 +159,21 @@ fn main() {
                     product: Some(FullProductName {
                         name: "csaf 0.3.0".to_string(),
                         product_id: ProductIdT("CSAF-1".to_string()),
-                        product_identification_helper: None,
+                        product_identification_helper: Some(ProductIdentificationHelper {
+                            cpe: None,
+                            hashes: None,
+                            model_numbers: None,
+                            purl: Some(
+                                PackageUrl::new("cargo", "csaf")
+                                    .unwrap()
+                                    .with_version("0.3.0")
+                                    .to_owned(),
+                            ),
+                            sbom_urls: None,
+                            serial_numbers: None,
+                            skus: None,
+                            x_generic_uris: None,
+                        }),
                     }),
                     branches: None,
                 }])),

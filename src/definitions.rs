@@ -1,6 +1,8 @@
 use std::convert::{TryFrom, TryInto};
 
+use packageurl::PackageUrl;
 use serde::{Deserialize, Serialize};
+use serde_with::{serde_as, DisplayFromStr};
 use url::Url;
 
 pub(crate) type AcknowledgmentsT = Vec<Acknowledgment>;
@@ -80,13 +82,15 @@ pub struct FullProductName {
 }
 
 /// [Product Identification Helper](https://github.com/oasis-tcs/csaf/blob/master/csaf_2.0/prose/csaf-v2-editor-draft.md#3133-full-product-name-type---product-identification-helper)
+#[serde_as]
 #[serde_with::skip_serializing_none]
 #[derive(Serialize, Deserialize, Debug, Clone)]
 pub struct ProductIdentificationHelper {
     pub cpe: Option<String>, // TODO: Integrate actual CPE aware data type
     pub hashes: Option<Vec<HashCollection>>,
     pub model_numbers: Option<Vec<String>>, // TODO: No empty strings, enforce unique
-    pub purl: Option<String>, // TODO: Validation https://github.com/oasis-tcs/csaf/blob/master/csaf_2.0/prose/csaf-v2-editor-draft.md#31333-full-product-name-type---product-identification-helper---purl
+    #[serde_as(as = "Option<DisplayFromStr>")]
+    pub purl: Option<PackageUrl<'static>>,
     pub sbom_urls: Option<Vec<Url>>,
     pub serial_numbers: Option<Vec<String>>, // TODO: No empty strings, enforce unique
     pub skus: Option<Vec<String>>,

@@ -21,6 +21,7 @@ rustsec = { version = "0.25", optional = true }
 # Has to be kept in sync with version used by rustsec
 crates-index = { version = "0.17", optional = true }
 serde_with = "1"
+packageurl = { version = "0.3", features = ["serde"] }
 
 [features]
 default = ["rustsec-interop"]
