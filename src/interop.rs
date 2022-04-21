@@ -1,5 +1,5 @@
 #[cfg(feature = "rustsec-interop")]
-mod rustsec {
+pub mod rustsec {
     use std::convert::TryInto;
 
     use crate::{
@@ -229,7 +229,7 @@ mod rustsec {
                 // TODO: DRY
                 for pattern in versions.unaffected() {
                     if pattern.matches(&rustsec_version) {
-                        output.unaffected.0.push(branch_with_package(
+                        output.unaffected.0.push(product_version_branch(
                             &rustsec_version,
                             package,
                             id_counter,
@@ -240,7 +240,7 @@ mod rustsec {
                 }
                 for pattern in versions.patched() {
                     if pattern.matches(&rustsec_version) {
-                        output.patched.0.push(branch_with_package(
+                        output.patched.0.push(product_version_branch(
                             &rustsec_version,
                             package,
                             id_counter,
@@ -253,7 +253,7 @@ mod rustsec {
                 // At this point the version has matched none of the unaffected or patched patterns, so can be evaulated
                 // as potentially vulnerable
                 if versions.is_vulnerable(&rustsec_version) {
-                    output.vulnerable.0.push(branch_with_package(
+                    output.vulnerable.0.push(product_version_branch(
                         &rustsec_version,
                         package,
                         id_counter,
@@ -274,12 +274,16 @@ mod rustsec {
         }
     }
 
-    fn branch_with_package(version: &rustsec::Version, package: &str, id_counter: usize) -> Branch {
+    pub fn product_version_branch(
+        version: impl ToString,
+        package: &str,
+        id_counter: usize,
+    ) -> Branch {
         Branch {
             name: version.to_string(),
             category: BranchCategory::ProductVersion,
             product: Some(FullProductName {
-                name: format!("{} {}", package, version),
+                name: format!("{} {}", package, version.to_string()),
                 product_id: ProductIdT(format!("{}-{}", package.to_uppercase(), id_counter)),
                 product_identification_helper: Some(ProductIdentificationHelper {
                     cpe: None,

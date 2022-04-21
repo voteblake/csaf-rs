@@ -22,7 +22,7 @@ use vulnerability::Vulnerability;
 
 pub mod definitions;
 
-mod interop;
+pub mod interop;
 
 /// [Top level CSAF structure definition](https://github.com/oasis-tcs/csaf/blob/master/csaf_2.0/prose/csaf-v2-editor-draft.md#32-properties)
 ///

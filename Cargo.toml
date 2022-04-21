@@ -22,6 +22,7 @@ rustsec = { version = "0.25", optional = true }
 crates-index = { version = "0.17", optional = true }
 serde_with = "1"
 packageurl = { version = "0.3", features = ["serde"] }
+cpe = "0.1"
 
 [features]
 default = ["rustsec-interop"]
