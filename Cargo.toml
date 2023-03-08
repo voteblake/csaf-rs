@@ -20,7 +20,7 @@ cvss = { version = "1", features = ["serde"] }
 rustsec = { version = "0.25", optional = true }
 # Has to be kept in sync with version used by rustsec
 crates-index = { version = "0.17", optional = true }
-serde_with = "1"
+serde_with = "2"
 packageurl = { version = "0.3", features = ["serde"] }
 cpe = "0.1"
 

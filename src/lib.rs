@@ -85,4 +85,10 @@ mod tests {
         let document: Csaf = serde_json::from_str(example).unwrap();
         println!("{:#?}", document);
     }
+    #[test]
+    fn third_example_deserializes() {
+        let example = include_str!("../tests/rhba-2023_0564.json");
+        let document: Csaf = serde_json::from_str(example).unwrap();
+        println!("{:#?}", document);
+    }
 }

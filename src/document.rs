@@ -2,16 +2,18 @@ use std::{fmt::Display, str::FromStr};
 
 use chrono::{DateTime, Utc};
 use serde::{Deserialize, Serialize};
+use serde_with::{serde_as, DisplayFromStr};
 use url::Url;
 
 use crate::definitions::{AcknowledgmentsT, LangT, NotesT, ReferencesT, VersionT};
 
 /// [Document level meta-data](https://github.com/oasis-tcs/csaf/blob/master/csaf_2.0/prose/csaf-v2-editor-draft.md#321-document-property)
+#[serde_as]
 #[serde_with::skip_serializing_none]
 #[derive(Serialize, Deserialize, Debug)]
 pub struct Document {
     /// [See Category specification](https://github.com/oasis-tcs/csaf/blob/master/csaf_2.0/prose/csaf-v2-editor-draft.md#3213-document-property---category)
-    #[serde(with = "serde_with::rust::display_fromstr")]
+    #[serde_as(as = "DisplayFromStr")]
     pub category: Category,
     pub publisher: Publisher,
     pub title: String,
