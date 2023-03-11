@@ -37,12 +37,15 @@ pub mod rustsec {
         fn from(input: Advisory) -> Self {
             let advisory_date = input.metadata.date;
             let advisory_date = Utc
-                .ymd(
+                .with_ymd_and_hms(
                     advisory_date.year().try_into().unwrap(),
                     advisory_date.month(),
                     advisory_date.day(),
+                    0,
+                    0,
+                    0,
                 )
-                .and_hms(0, 0, 0);
+                .unwrap();
 
             let branches =
                 BranchTracking::extract_branches(input.metadata.package.as_ref(), &input.versions);
@@ -210,7 +213,8 @@ pub mod rustsec {
 
             let mut id_counter: usize = 1;
 
-            let index = crates_index::Index::new_cargo_default().expect("Must be able to access crates.io index");
+            let index = crates_index::Index::new_cargo_default()
+                .expect("Must be able to access crates.io index");
 
             let registry_crate = index
                 .crate_(package)
