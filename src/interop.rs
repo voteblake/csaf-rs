@@ -132,10 +132,10 @@ pub mod rustsec {
                     ids: Some(vec![VulnerabilityId {
                         text: input.metadata.id.to_string(),
                         system_name: match input.metadata.id.kind() {
-                            rustsec::advisory::id::Kind::RustSec => "RUSTSEC",
-                            rustsec::advisory::id::Kind::Cve => "CVE",
-                            rustsec::advisory::id::Kind::Ghsa => "GHSA",
-                            rustsec::advisory::id::Kind::Talos => "Talos",
+                            rustsec::advisory::IdKind::RustSec => "RUSTSEC",
+                            rustsec::advisory::IdKind::Cve => "CVE",
+                            rustsec::advisory::IdKind::Ghsa => "GHSA",
+                            rustsec::advisory::IdKind::Talos => "Talos",
                             _ => "Other",
                         }
                         .to_string(),
@@ -210,10 +210,7 @@ pub mod rustsec {
 
             let mut id_counter: usize = 1;
 
-            let index = crates_index::Index::new_cargo_default();
-            index
-                .retrieve_or_update()
-                .expect("Must be able to access crates.io index");
+            let index = crates_index::Index::new_cargo_default().expect("Must be able to access crates.io index");
 
             let registry_crate = index
                 .crate_(package)

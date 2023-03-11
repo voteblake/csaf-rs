@@ -16,10 +16,10 @@ repository = "https://github.com/voteblake/csaf-rs"
 serde = { version = "1", features = ["derive"] }
 url = { version = "2", features = ["serde"] }
 chrono = { version = "0.4", features = ["serde"] }
-cvss = { version = "1", features = ["serde"] }
-rustsec = { version = "0.25", optional = true }
+cvss = { version = "2", features = ["serde"] }
+rustsec = { version = "0.26", optional = true }
 # Has to be kept in sync with version used by rustsec
-crates-index = { version = "0.17", optional = true }
+crates-index = { version = "0.18", optional = true }
 serde_with = "2"
 packageurl = "0.3"
 cpe = "0.1.2"

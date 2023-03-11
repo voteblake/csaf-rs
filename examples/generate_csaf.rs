@@ -52,13 +52,13 @@ fn main() {
         rustsec::database::Database::fetch().expect("Need access to RustSec git repository");
 
     let rustsec_2020_0159: Csaf = rustsec_db
-        .get(&rustsec::advisory::id::Id::from_str("RUSTSEC-2020-0159").unwrap())
+        .get(&rustsec::advisory::Id::from_str("RUSTSEC-2020-0159").unwrap())
         .unwrap()
         .to_owned()
         .into();
     let rustsec_2020_0159 = rustsec_2020_0159.vulnerabilities.unwrap();
     let rustsec_2020_0071: Csaf = rustsec_db
-        .get(&rustsec::advisory::id::Id::from_str("RUSTSEC-2020-0071").unwrap())
+        .get(&rustsec::advisory::Id::from_str("RUSTSEC-2020-0071").unwrap())
         .unwrap()
         .to_owned()
         .into();
