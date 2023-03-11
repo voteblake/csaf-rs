@@ -286,7 +286,16 @@ pub mod rustsec {
                 name: format!("{} {}", package, version.to_string()),
                 product_id: ProductIdT(format!("{}-{}", package.to_uppercase(), id_counter)),
                 product_identification_helper: Some(ProductIdentificationHelper {
-                    cpe: None,
+                    cpe: Some(
+                        cpe::uri::Uri::builder()
+                            .part("a")
+                            .vendor(&format!("{package}_project"))
+                            .product(package)
+                            .version(&version.to_string())
+                            .validate()
+                            .expect("Maps to valid CPE uri")
+                            .to_owned(),
+                    ),
                     hashes: None,
                     model_numbers: None,
                     purl: Some(

@@ -86,7 +86,8 @@ pub struct FullProductName {
 #[serde_with::skip_serializing_none]
 #[derive(Serialize, Deserialize, Debug, Clone)]
 pub struct ProductIdentificationHelper {
-    pub cpe: Option<String>, // TODO: Integrate actual CPE aware data type
+    #[serde_as(as = "Option<DisplayFromStr>")]
+    pub cpe: Option<cpe::uri::OwnedUri>,
     pub hashes: Option<Vec<HashCollection>>,
     pub model_numbers: Option<Vec<String>>, // TODO: No empty strings, enforce unique
     #[serde_as(as = "Option<DisplayFromStr>")]
