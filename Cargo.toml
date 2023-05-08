@@ -21,6 +21,7 @@ serde_json = "1"
 serde_with = "3"
 packageurl = "0.3"
 cpe = "0.1.2"
+tempfile = "3"
 
 # rustsec is pinned as we need to ensure we use the same version of crates-index
 # rustsec will update crates-index in patch version releases

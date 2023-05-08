@@ -213,8 +213,23 @@ pub mod rustsec {
 
             let mut id_counter: usize = 1;
 
+            // While unread later, initalize here to prevent it from dropping at end of closure
+            // where the directory is created if necessary.
+            let mut _index_temp_dir = None;
+
             let index = crates_index::Index::new_cargo_default()
-                .expect("Must be able to access crates.io index");
+                .or_else(|_| {
+                    _index_temp_dir = Some(tempfile::tempdir().expect(
+                        "Creating a temporary directory for a crates index should succeed.",
+                    ));
+                    crates_index::Index::with_path(
+                        _index_temp_dir.expect("Was just set").path(),
+                        crates_index::INDEX_GIT_URL,
+                    )
+                })
+                .expect(
+                    "Either opening the default index or creating a temporary one should work.",
+                );
 
             let registry_crate = index
                 .crate_(package)
