@@ -28,7 +28,7 @@ pub mod interop;
 ///
 /// Interoperatbility with [RustSec](https://rustsec.org/) advisories is provided by a `From` implementation.
 #[serde_with::skip_serializing_none]
-#[derive(Serialize, Deserialize, Debug)]
+#[derive(Serialize, Deserialize, Debug, Clone, PartialEq)]
 pub struct Csaf {
     pub document: Document,
     pub product_tree: Option<ProductTree>,
