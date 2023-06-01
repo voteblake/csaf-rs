@@ -10,7 +10,7 @@ use crate::definitions::{AcknowledgmentsT, LangT, NotesT, ReferencesT, VersionT}
 /// [Document level meta-data](https://github.com/oasis-tcs/csaf/blob/master/csaf_2.0/prose/csaf-v2-editor-draft.md#321-document-property)
 #[serde_as]
 #[serde_with::skip_serializing_none]
-#[derive(Serialize, Deserialize, Debug)]
+#[derive(Serialize, Deserialize, Debug, Clone, PartialEq)]
 pub struct Document {
     /// [See Category specification](https://github.com/oasis-tcs/csaf/blob/master/csaf_2.0/prose/csaf-v2-editor-draft.md#3213-document-property---category)
     #[serde_as(as = "DisplayFromStr")]
@@ -28,7 +28,7 @@ pub struct Document {
     pub source_lang: Option<LangT>,
 }
 
-#[derive(Debug)]
+#[derive(Debug, Clone, PartialEq)]
 pub enum Category {
     Base,
     SecurityAdvisory,
@@ -65,7 +65,7 @@ impl Display for Category {
 }
 
 /// [CSAF Version](https://github.com/oasis-tcs/csaf/blob/master/csaf_2.0/prose/csaf-v2-editor-draft.md#3214-document-property---csaf-version)
-#[derive(Serialize, Deserialize, Debug)]
+#[derive(Serialize, Deserialize, Debug, Clone, PartialEq)]
 pub enum CsafVersion {
     #[serde(rename = "2.0")]
     TwoDotZero,
@@ -73,7 +73,7 @@ pub enum CsafVersion {
 
 /// [Publisher property](https://github.com/oasis-tcs/csaf/blob/master/csaf_2.0/prose/csaf-v2-editor-draft.md#3218-document-property---publisher)
 #[serde_with::skip_serializing_none]
-#[derive(Serialize, Deserialize, Debug)]
+#[derive(Serialize, Deserialize, Debug, Clone, PartialEq)]
 pub struct Publisher {
     pub category: PublisherCategory,
     pub name: String,
@@ -83,7 +83,7 @@ pub struct Publisher {
 }
 
 /// [Publisher category](https://github.com/oasis-tcs/csaf/blob/master/csaf_2.0/prose/csaf-v2-editor-draft.md#32181-document-property---publisher---category)
-#[derive(Serialize, Deserialize, Debug)]
+#[derive(Serialize, Deserialize, Debug, Clone, PartialEq)]
 #[serde(rename_all = "lowercase")]
 pub enum PublisherCategory {
     Coordinator,
@@ -96,7 +96,7 @@ pub enum PublisherCategory {
 
 /// [Tracking metadata](https://github.com/oasis-tcs/csaf/blob/master/csaf_2.0/prose/csaf-v2-editor-draft.md#32112-document-property---tracking)
 #[serde_with::skip_serializing_none]
-#[derive(Serialize, Deserialize, Debug)]
+#[derive(Serialize, Deserialize, Debug, Clone, PartialEq)]
 pub struct Tracking {
     pub current_release_date: DateTime<Utc>,
     pub id: String,
@@ -110,7 +110,7 @@ pub struct Tracking {
 
 /// [Document Generator](https://github.com/oasis-tcs/csaf/blob/master/csaf_2.0/prose/csaf-v2-editor-draft.md#321123-document-property---tracking---generator)
 #[serde_with::skip_serializing_none]
-#[derive(Serialize, Deserialize, Debug)]
+#[derive(Serialize, Deserialize, Debug, Clone, PartialEq)]
 pub struct Generator {
     pub engine: Engine,
     pub date: Option<DateTime<Utc>>,
@@ -118,7 +118,7 @@ pub struct Generator {
 
 /// [Generator Engine](https://github.com/oasis-tcs/csaf/blob/master/csaf_2.0/prose/csaf-v2-editor-draft.md#321123-document-property---tracking---generator)
 #[serde_with::skip_serializing_none]
-#[derive(Serialize, Deserialize, Debug)]
+#[derive(Serialize, Deserialize, Debug, Clone, PartialEq)]
 pub struct Engine {
     pub name: String,
     pub version: Option<String>,
@@ -140,7 +140,7 @@ impl std::default::Default for Generator {
 
 /// [Revision history](https://github.com/oasis-tcs/csaf/blob/master/csaf_2.0/prose/csaf-v2-editor-draft.md#321126-document-property---tracking---revision-history)
 #[serde_with::skip_serializing_none]
-#[derive(Serialize, Deserialize, Debug)]
+#[derive(Serialize, Deserialize, Debug, Clone, PartialEq)]
 pub struct Revision {
     pub date: DateTime<Utc>,
     pub legacy_version: Option<String>,
@@ -149,7 +149,7 @@ pub struct Revision {
 }
 
 /// [Document status](https://github.com/oasis-tcs/csaf/blob/master/csaf_2.0/prose/csaf-v2-editor-draft.md#321127-document-property---tracking---status)
-#[derive(Serialize, Deserialize, Debug)]
+#[derive(Serialize, Deserialize, Debug, Clone, PartialEq)]
 #[serde(rename_all = "lowercase")]
 pub enum Status {
     Draft,
@@ -159,7 +159,7 @@ pub enum Status {
 
 /// [Aggregate severity](https://github.com/oasis-tcs/csaf/blob/master/csaf_2.0/prose/csaf-v2-editor-draft.md#3212-document-property---aggregate-severity)
 #[serde_with::skip_serializing_none]
-#[derive(Serialize, Deserialize, Debug)]
+#[derive(Serialize, Deserialize, Debug, Clone, PartialEq)]
 pub struct AggregateSeverity {
     pub text: String,
     pub namespace: Option<Url>,
@@ -167,7 +167,7 @@ pub struct AggregateSeverity {
 
 /// [Distribution](https://github.com/oasis-tcs/csaf/blob/master/csaf_2.0/prose/csaf-v2-editor-draft.md#3215-document-property---distribution)
 #[serde_with::skip_serializing_none]
-#[derive(Serialize, Deserialize, Debug)]
+#[derive(Serialize, Deserialize, Debug, Clone, PartialEq)]
 pub struct Distribution {
     // TODO: enforce 'with at least 1 of the 2 properties'
     pub text: Option<String>,
@@ -176,14 +176,14 @@ pub struct Distribution {
 
 /// [TLP](https://github.com/oasis-tcs/csaf/blob/master/csaf_2.0/prose/csaf-v2-editor-draft.md#32152-document-property---distribution---tlp)
 #[serde_with::skip_serializing_none]
-#[derive(Serialize, Deserialize, Debug)]
+#[derive(Serialize, Deserialize, Debug, Clone, PartialEq)]
 pub struct Tlp {
     pub label: TlpLabel,
     pub url: Option<Url>,
 }
 
 /// [TLP](https://github.com/oasis-tcs/csaf/blob/master/csaf_2.0/prose/csaf-v2-editor-draft.md#32152-document-property---distribution---tlp)
-#[derive(Serialize, Deserialize, Debug)]
+#[derive(Serialize, Deserialize, Debug, Clone, PartialEq)]
 pub enum TlpLabel {
     AMBER,
     GREEN,

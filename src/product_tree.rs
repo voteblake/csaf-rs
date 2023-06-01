@@ -4,7 +4,7 @@ use crate::definitions::{BranchesT, FullProductName, ProductGroupIdT, ProductIdT
 
 /// [Product Tree](https://github.com/oasis-tcs/csaf/blob/master/csaf_2.0/prose/csaf-v2-editor-draft.md#322-product-tree-property)
 #[serde_with::skip_serializing_none]
-#[derive(Serialize, Deserialize, Debug)]
+#[derive(Serialize, Deserialize, Debug, Clone, PartialEq)]
 pub struct ProductTree {
     pub branches: Option<BranchesT>,
     pub full_product_names: Option<Vec<FullProductName>>,
@@ -14,7 +14,7 @@ pub struct ProductTree {
 
 /// [Product Groups](https://github.com/oasis-tcs/csaf/blob/master/csaf_2.0/prose/csaf-v2-editor-draft.md#3223-product-tree-property---product-groups)
 #[serde_with::skip_serializing_none]
-#[derive(Serialize, Deserialize, Debug)]
+#[derive(Serialize, Deserialize, Debug, Clone, PartialEq)]
 pub struct ProductGroup {
     pub group_id: ProductGroupIdT,
     pub product_ids: Vec<ProductIdT>,
@@ -22,7 +22,7 @@ pub struct ProductGroup {
 }
 
 /// [Relationships](https://github.com/oasis-tcs/csaf/blob/master/csaf_2.0/prose/csaf-v2-editor-draft.md#3224-product-tree-property---relationships)
-#[derive(Serialize, Deserialize, Debug)]
+#[derive(Serialize, Deserialize, Debug, Clone, PartialEq)]
 pub struct Relationship {
     pub category: RelationshipCategory,
     pub full_product_name: FullProductName,
@@ -31,7 +31,7 @@ pub struct Relationship {
 }
 
 /// [Relationships](https://github.com/oasis-tcs/csaf/blob/master/csaf_2.0/prose/csaf-v2-editor-draft.md#3224-product-tree-property---relationships)
-#[derive(Serialize, Deserialize, Debug)]
+#[derive(Serialize, Deserialize, Debug, Clone, PartialEq)]
 #[serde(rename_all = "snake_case")]
 pub enum RelationshipCategory {
     DefaultComponentOf,
