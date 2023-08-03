@@ -27,7 +27,7 @@ tempfile = "3"
 # rustsec is pinned as we need to ensure we use the same version of crates-index
 # rustsec will update crates-index in patch version releases
 rustsec = { version = "=0.27.0", optional = true }
-crates-index = { version = "0.19", optional = true }
+crates-index = { version = "2.1", optional = true }
 
 [features]
 default = ["rustsec-interop"]
