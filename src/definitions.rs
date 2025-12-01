@@ -23,7 +23,7 @@ pub struct Acknowledgment {
 pub struct BranchesT(pub Vec<Branch>);
 
 impl BranchesT {
-    pub(crate) fn product_ids(&self) -> Option<Vec<ProductIdT>> {
+    pub fn product_ids(&self) -> Option<Vec<ProductIdT>> {
         if self.0.is_empty() {
             None
         } else {

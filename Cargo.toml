@@ -20,7 +20,7 @@ chrono = { version = "0.4", features = ["serde"] }
 cvss = { version = "2", features = ["serde"] }
 serde_json = "1"
 serde_with = "3"
-packageurl = "0.3"
+packageurl = "0.6.0-rc.1"
 cpe = "0.1.2"
 tempfile = "3"
 
@@ -35,3 +35,6 @@ rustsec-interop = ["rustsec", "crates-index"]
 
 [dev-dependencies]
 serde_json = "1"
+
+[patch.crates-io]
+packageurl = { git = "https://github.com/jcrossley3/packageurl.rs", branch = "issue-28" }
